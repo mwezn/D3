@@ -1,0 +1,147 @@
+<html>
+<head>
+<style>
+#Q #Q1 {
+  display: none;
+}
+</style>
+<meta charset="utf-8">
+<script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
+
+<body>
+<h1> Plotting different maths functions with the
+D3.js library </h1>
+
+<button onclick="bellCurve(this)">Show Normal PDF</button>
+<div id="Q"></div>
+<button onclick="quadratic(this)">Show quadratic</button>
+<div id="Q1"></div>
+
+
+
+
+<script>
+ function x2(x){
+    return x**2
+}
+var contain=[]
+for (let i=-10; i<10; i++){
+  contain.push([i,x2(i)])
+}
+
+function NormalPDF(x,mu,sigma){
+    var mean=mu;
+    var std=sigma;
+    var f=Math.E**((-1/2)*((x-mean)/std)**2)/(std*Math.sqrt(2*Math.PI))
+    return f
+}
+
+function LogNormal(x,mu,sigma){
+    var mean=mu;
+    var std=sigma;
+    var f=Math.E**(-1*(Math.log(x)-mean)**2/(2*sigma**2))/(x*std*Math.sqrt(2*Math.PI))
+    return f
+}
+
+var normal=[]
+for (let i=0;i<10;i+=0.1){
+  normal.push([i,LogNormal(i,0,1)])
+}
+
+console.log(NormalPDF(0,0,1))
+
+
+
+const w = 600;
+const h = 600;
+const padding=60;
+
+function bellCurve(props){
+    var show = props.nextElementSibling;
+    if (show.style.display==="none"){
+      show.style.display="block"
+      props.innerHTML="Hide Normal PDF";
+    }
+    else{
+      show.style.display="none";
+      props.innerHTML="Show Normal PDF";
+      
+    }
+}
+
+const svg = d3.select("#Q")
+                  .append("svg")
+                  .attr("width", w)
+                  .attr("height", h)
+                  
+    const xscale=d3.scaleLinear()
+      .domain([0,5])
+      .range([0+padding,w-padding]);
+    const yscale=d3.scaleLinear()
+      .domain([0,1.5])
+      .range([h-padding,0]);
+
+    svg.selectAll("circle")
+       .data(normal)
+       .enter()
+       .append("circle")
+       .attr("cx", (d)=> xscale(d[0]))
+       .attr("cy", (d)=> yscale(d[1]))
+       .attr("r", 3)
+       .attr("fill","blue");
+   const Xaxis=d3.axisBottom(xscale);
+   const Yaxis=d3.axisLeft(yscale);
+   svg.append("g")
+   .attr("transform", "translate(0, " + (h - padding) + ")")
+   .call(Xaxis);
+   svg.append("g")
+   .attr("transform", `translate(${padding}, ` + 0+ ")")
+   .call(Yaxis);
+
+function quadratic(props){
+  var show = props.nextElementSibling;
+    if (show.style.display==="none"){
+      show.style.display="block"
+      props.innerHTML="Hide Quadratic";
+      
+    }
+    else{
+      show.style.display="none";
+      props.innerHTML="Show Quadratic";
+    }
+}
+  const svg2 = d3.select("#Q1")
+                  .append("svg")
+                  .attr("width", w)
+                  .attr("height", h)
+                  
+    const Xscale=d3.scaleLinear() // This is where function closures will be needed! (previously defined var)
+      .domain([-10,10])
+      .range([0+padding,w-padding]);
+    const Yscale=d3.scaleLinear()
+      .domain([0,100])
+      .range([h-padding,0]);
+
+    svg2.selectAll("circle")
+       .data(contain)
+       .enter()
+       .append("circle")
+       .attr("cx", (d)=> Xscale(d[0]))
+       .attr("cy", (d)=> Yscale(d[1]))
+       .attr("r", 3)
+       .attr("fill","blue");
+   const xaxis=d3.axisBottom(Xscale);
+   const yaxis=d3.axisLeft(Yscale); 
+   svg2.append("g")
+   .attr("transform", "translate(0, " + (h - padding) + ")")
+   .call(xaxis);
+   svg2.append("g")
+   .attr("transform", `translate(${padding}, ` + 0+ ")")
+   .call(yaxis);
+
+
+
+</script>
+</body>
+</html>

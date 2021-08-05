@@ -1,0 +1,121 @@
+<html>
+    <head>
+        <meta charset="utf-8"></meta>
+    </head>
+<script src="https://d3js.org/d3.v4.js"></script>
+<body>
+    <div id="fractal"></div>
+</body>
+
+<script>
+    var width=1000
+    var height=1000
+    var magFactor=600
+    const svg = d3.select('#fractal')
+      .append('svg')
+      .attr('width', width)
+      .attr('height', height)
+      .style('background-color','black');
+    
+    var loops=2
+    var a=new Complex(0,0)
+
+    function Complex(re,im){
+        this.real=re
+        this.imag=im
+
+    }
+
+    Complex.prototype.abs=function(){
+        return Math.sqrt(this.real**2+this.imag**2)
+    }
+
+    function addcomplex(num1,num2){
+        var real=num1.real+num2.real
+        var imaginary=num1.imag+num2.imag
+        return new Complex(real, imaginary)
+
+    }
+
+    function multcomplex(num1,num2){
+        var real=num1.real*num2.real-(num1.imag*num2.imag)
+        var imaginary=num1.real*num2.imag+num2.real*num1.imag
+        return new Complex(real,imaginary)
+    }
+
+    var panX = 0;
+    var panY = 0;
+
+
+    function mandelbrot(x1,y1,x2,y2){
+        var dx=(x2-x1)/width
+        var dy=(y2-y1)/height
+        var y=y1
+        for (let i=0;i<width;i++){
+            var x=x1
+            for (let j=0;j<height;j++){
+                var belongs=CheckMandel(x,y)
+                if (belongs){
+                    svg.append('circle')
+                        .style('fill','lightgreen')
+                        .attr('cx',i)
+                        .attr('cy',j)
+                        .attr('r',0.9)
+
+                }
+            }
+        }
+        y=y-dy
+    }
+
+function CheckMandel(x,y){ 
+        var realComponentOfResult = x;
+        var imaginaryComponentOfResult = y;  
+        for(var i = 0; i < 300; i++) {
+     // Calculate the real and imaginary components of the result
+     // separately
+          var tempRealComponent = realComponentOfResult * realComponentOfResult
+                             - imaginaryComponentOfResult * imaginaryComponentOfResult
+                             + x;
+
+          var tempImaginaryComponent = 2 * realComponentOfResult * imaginaryComponentOfResult
+                             + y;
+
+          realComponentOfResult = tempRealComponent;
+          imaginaryComponentOfResult = tempImaginaryComponent;
+       }
+
+if (realComponentOfResult * imaginaryComponentOfResult < 5)
+    return true; // In the Mandelbrot set
+
+return false; // Not in the set
+}
+
+            
+function CheckMandel2(x,y){ 
+        var a=new Complex(x,y)
+        var s=0.0
+        for (let k=0;k<loops;k++){
+            s= addcomplex(multcomplex(s,s),a)
+        }
+          
+
+if (s.abs()<=2)
+    return true; // In the Mandelbrot set
+
+return false; // Not in the set
+}
+
+    mandelbrot(-2,2,2,-2)
+
+
+
+    
+
+    
+    
+    
+    
+    
+</script>
+</html>

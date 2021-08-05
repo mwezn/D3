@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+</head>
+<script src="https://d3js.org/d3.v4.js"></script>
+<body>
+    <div id="steps"></div>
+    <div id="container">
+    </div>
+<script>
+let dataset = [1,4,2,8,345,123,43,32,5643,63,123,43,2,55,1,234,92,86,1000];
+
+var margin = {top: -200, right: 30, bottom: 30, left: 60},
+        w = 700 - margin.left - margin.right,
+        h = 400 - margin.top - margin.bottom;
+const sleep = (milliseconds) => {
+    return new Promise(resolve => setTimeout(resolve, milliseconds))
+}
+
+var color = d3.scaleSequential().domain(dataset)
+           .interpolator(d3.interpolateRainbow);
+let color2=d3.scaleLinear().domain([d3.min(dataset),d3.max(dataset)])
+           .range(["red","blue"])
+var myColor = d3.scaleSequential().domain([d3.min(dataset),d3.max(dataset)])
+  .interpolator(d3.interpolateViridis);
+
+
+const min =(arr)=>{
+    let min= Infinity;
+    let n=arr.length;
+    let i=0;
+    for (i;i<n;i++){
+        if (arr[i]<min) min=arr[i]
+    }
+    return min;
+}
+
+async function selectionSort(array) {
+  let steps=0;
+  let s=document.getElementById("steps")
+  let newarr=[...array]
+  let n=array.length;
+  for (let i=0;i<n;i++){
+    
+    s.innerHTML=""
+    s.innerHTML=steps;
+    await sleep(100)
+    let a=newarr[i]
+    let tmp=newarr.slice(i,n)
+    let cut=newarr.lastIndexOf(min(tmp))
+    newarr[i]=min(tmp)
+    steps++;
+    newarr[cut]=a
+    steps++;
+    shift(newarr)
+  }
+  return newarr;
+}
+
+  
+
+const svg = d3.select("#container")
+              .append("svg")
+              .attr("width", w + margin.left + margin.right)
+              .attr("height", h+500);
+
+const shift =(arr)=> {
+    d3.select("svg").remove();
+    const svg = d3.select("#container")
+              .append("svg")
+              .attr("width", w)
+              .attr("height", h);
+let plot=svg.selectAll("rect")
+   .data(arr)
+   .enter()
+   .append("rect")
+   //.attr("fill",(d)=>`#${d}`) nice black-grey-white color
+   .attr("fill",(d)=>myColor(d))
+   .attr("x", (d, i) => i * 30)
+   .attr("text", (d,i)=>d)
+   .attr("y", (d,i)=>h-2*d)
+   .attr("width", 20)
+   .attr("height", (d, i) => {
+     return 3*d;
+    });
+svg.selectAll("text")
+       .data(arr)
+       .enter()
+       .append("text")
+       .attr("fill","blue")
+       .attr("x", (d, i) => i * 30+3)
+       .attr("y", (d, i) => h - d-10)
+       .text(d=>d)
+svg.selectAll("text.index")
+    .data(arr)
+    .enter()
+    .append('text')
+    .attr("fill", "red")
+    .attr("x", (d, i) => i * 30+3)
+    .attr("y", (d, i) => h+10 )
+    .text((d,i)=>i)
+}
+/*setInterval(()=>{
+    let arr=[...dataset]
+    dataset=dataset.map(d=>2*d);
+    arr=[...dataset]
+    console.log(arr);
+    shift(arr)
+},2000)*/
+
+//shift(dataset)
+selectionSort(dataset);
+
+</script> 
+</body>
+
+</html>

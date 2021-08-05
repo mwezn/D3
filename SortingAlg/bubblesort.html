@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+</head>
+<script src="https://d3js.org/d3.v4.js"></script>
+<body>
+    <div id="container">
+    
+    </div>
+<script>
+ var margin = {top: -200, right: 30, bottom: 30, left: 60},
+        w = 700 - margin.left - margin.right,
+        h = 400 - margin.top - margin.bottom;
+    
+let dataset = [1,4,2,8,345,123,43,32,5643,63,123,43,2,55,1,234,92];
+
+var scale =d3.scaleLinear()
+           .domain([d3.min(dataset),d3.max(dataset)])
+           .range((50,500))
+
+
+
+const sleep = (milliseconds) => {
+    return new Promise(resolve => setTimeout(resolve, milliseconds))
+  }
+async function bubbleSort(array) {
+    let n=array.length;
+    let i=0;
+    for (i;i<n;i++){
+      for(let j=i+1;j<n+i;j++){
+        await sleep(5)
+        let a=array[i]
+        let b=array[j]
+        console.log(a,b)
+        if (b<a) {
+          array[i]=b
+          array[j]=a
+          shift(array)
+        }
+       }
+    }
+    return array
+ }
+  
+
+const svg = d3.select("#container")
+              .append("svg")
+              .attr("width", w)
+              .attr("height", h);
+
+const shift =(arr)=> {
+    d3.select("svg").remove();
+    const svg = d3.select("#container")
+              .append("svg")
+              .attr("width", w)
+              .attr("height", h);
+let plot=svg.selectAll("rect")
+   .data(arr)
+   .enter()
+   .append("rect")
+   .attr("fill","#2289ff") //#2289ff
+   .attr("fill", (d)=> `rgb(${d},${d},${d})`)
+   .attr("x", (d, i) => i * 30)
+   .attr("text", (d,i)=>d)
+   .attr("y", (d,i)=>h-2*d)
+   .attr("width", 20)
+   .attr("height", (d, i) => {
+     return 3*d;
+    });
+svg.selectAll("text")
+       .data(arr)
+       .enter()
+       .append("text")
+       .attr("fill","blue")
+       .attr("x", (d, i) => i * 30+3)
+       .attr("y", (d, i) => h - d-20)
+       .text(d=>d)
+svg.selectAll("text.index")
+    .data(arr)
+    .enter()
+    .append('text')
+    .attr("fill", "red")
+    .attr("x", (d, i) => i * 30+3)
+    .attr("y", (d, i) => h )
+    .text((d,i)=>i)
+}
+
+bubbleSort(dataset)
+
+</script> 
+</body>
+
+</html>
