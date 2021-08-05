@@ -9,8 +9,8 @@
 </head>
 <script src="https://d3js.org/d3.v4.js"></script>
 <body>
+    <div id="steps"></div>
     <div id="container">
-    
     </div>
 <script>
  var margin = {top: -200, right: 30, bottom: 30, left: 60},
@@ -29,16 +29,22 @@ const sleep = (milliseconds) => {
     return new Promise(resolve => setTimeout(resolve, milliseconds))
   }
 async function bubbleSort(array) {
+    let steps=0;
+    let s=document.getElementById("steps")
     let n=array.length;
     let i=0;
     for (i;i<n;i++){
       for(let j=i+1;j<n+i;j++){
+        s.innerHTML=""
+        s.innerHTML=steps;
         await sleep(5)
         let a=array[i]
         let b=array[j]
         console.log(a,b)
         if (b<a) {
+          steps++;
           array[i]=b
+          steps++
           array[j]=a
           shift(array)
         }

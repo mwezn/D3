@@ -64,17 +64,11 @@ async function selectionSort(array) {
 
   
 
-const svg = d3.select("#container")
-              .append("svg")
-              .attr("width", w + margin.left + margin.right)
-              .attr("height", h+500);
+const svg = d3.select("#container").append("svg").attr("width", w + margin.left + margin.right).attr("height", h+500);
 
 const shift =(arr)=> {
     d3.select("svg").remove();
-    const svg = d3.select("#container")
-              .append("svg")
-              .attr("width", w)
-              .attr("height", h);
+    const svg = d3.select("#container").append("svg").attr("width", w).attr("height", h);
 let plot=svg.selectAll("rect")
    .data(arr)
    .enter()
