@@ -1,0 +1,184 @@
+<head>
+<style>
+      .textBox {
+        display: block;
+        border:1px solid black;
+        background-color: cadetblue;
+        font-size: 20px;
+      }
+    </style>
+  </head>
+  <script src="https://d3js.org/d3.v4.js"></script>
+  <body>
+      <h1>Collatz conjecture</h1>
+  <div id="my_dataviz"></div>
+  <script>
+    var padding= 100;
+    var margin = {top: 10, right: 30, bottom: 30, left: 60},
+          width = 900 - margin.left - margin.right,
+          height = 600 - margin.top - margin.bottom;
+      
+  
+      var svg = d3.select("#my_dataviz")
+        .append("svg")
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+          .attr("transform",
+                "translate(" + margin.left + "," + margin.top + ")");
+
+let arr=[]
+let c=window.prompt("Enter n value")
+
+const collatz=(n)=>{
+    if (n%2==0) return n/2;
+    else {
+        return 3*n+1
+    }
+}
+//let c=5;
+function start_col(){
+  for (let i=0;i<1000;i++){
+    console.log(c)
+    arr.push(c)
+    c=(collatz(c))
+  }
+  shift(arr)
+}
+const shift =(arr)=> {
+      d3.select("svg").remove();
+      const svg = d3.select("#my_dataviz").append("svg").attr("width", width).attr("height", height);
+  
+  
+    const Xscale=d3.scaleLinear() 
+        .domain([0,arr.length])
+        .range([0+padding,width-padding]);
+    const Yscale=d3.scaleLinear()
+        .domain([d3.min(arr),d3.max(arr)])
+        .range([height-padding,0+padding]);
+    
+    const Xscale2=d3.scaleLinear() //Change this back??
+        .domain([0,arr.length])
+        .range([0+padding,width-padding]);
+    const Yscale2=d3.scaleLinear()
+        .domain([d3.min(arr),d3.max(arr)])
+        .range([height-padding,0+padding]);
+    
+  
+    var x = d3.scaleLinear()
+          .domain([0,arr.length])
+          .range([ 0+padding, width-padding ]);
+    var y = d3.scaleLinear()
+          .domain([d3.min(arr),d3.max(arr)])
+          .range([height-padding,0+padding]);
+     
+        // This allows to find the closest X index of the mouse:
+        var bisect = d3.bisector(function(d) { return d; }).left;
+      
+        // Create the circle that travels along the curve of chart
+        var focus = svg
+          .append('g')
+          .append('circle')
+            .style("fill", "none")
+            .attr("stroke", "black")
+            .attr('r', 8.5)
+            .style("opacity", 0)
+        var l=svg
+          .append('g')
+          .append('line')
+            .style("stroke","green")
+            .style("opacity",0)
+        var h1 = d3.select('h1');
+        svg
+          .append("path")
+          .datum(arr)
+          .attr("fill", "none")
+          .attr("stroke", "steelblue")
+          .attr("stroke-width", 1.5)
+          .attr("d", d3.line()
+            .x(function(d,i) { return x(i) })
+            .y(function(d) { return y(d) })
+            )
+    var focusTxt = svg
+      .append('g')
+      .append('text')
+        .style('opacity',0)
+        .attr("text-anchor", "left")
+        .attr("alignment-baseline", "middle")
+        .attr("class", "textBox")
+    var area = d3.area()
+                  
+          .x( function(d,i) { return x(i)} )
+          .y( function(d) { return y(0) } )
+          .y1( function(d) { return y(d) } );
+    var a= svg.append('path')
+        .attr('stroke', 'black')
+        .attr('fill', '#69b3a2'); //#69b3a2
+  
+  
+      svg
+       .on("mouseover",function(){
+         a.style("opacity",1)
+         focus.style("opacity",1)
+         focusTxt.style("opacity",1)
+         h1.style("opacity",1)
+         l.style("opacity",1)
+       })
+       .on("mousemove",function(){
+         var x0 = x.invert(d3.mouse(this)[0])  //Important!
+         var i=bisect(arr,x0,1)
+         var currentData=arr.slice(0,i)
+         h1.style("font-family",'arial')
+         l.attr("x1",x(i))
+         l.attr("y1",y(arr[i]))
+         l.attr("x2",x(i))
+         l.attr("y2",y(d3.min(arr)));
+         focus.attr("cx",x(i))
+         focus.attr("cy",y(arr[i]))
+         focusTxt.html("x:" + i + "  -  " + "y:" + arr[i])
+         focusTxt.attr('x',x(i)+10)
+         focusTxt.attr('y',y(arr[i]))
+         a.attr("d", area(currentData))
+       })
+       .on("mouseleave",function(){
+         a.style("opacity",0)
+         focus.style("opacity",0)
+         focusTxt.style("opacity",0)
+         h1.style("opacity",0)
+       })
+      
+        
+        
+  
+     const xaxis=d3.axisBottom(Xscale);
+     const yaxis=d3.axisLeft(Yscale); 
+     svg.append("g")
+       .attr("class","xa")
+       .attr("transform", "translate(0, " + (height - padding) + ")")
+       .call(xaxis);
+     svg.append("g")
+       .attr("transform", `translate(${padding}, ` + 0 + ")")
+       .call(yaxis);
+     const xaxis2=d3.axisBottom(Xscale2);
+     const yaxis2=d3.axisLeft(Yscale2); 
+     svg.append("g")
+       .attr("transform", "translate(0, " + (height - padding) + ")")
+       .call(xaxis2);
+     svg.append("g")
+       .attr("transform", `translate(${padding}, ` + 0 + ")")
+       .call(yaxis2);
+    svg.append("g")
+       .attr("class","xa")
+       .attr("transform", "translate(0, " + (height - padding) + ")")
+       .call(xaxis);
+     svg.append("g")
+       .attr("transform", `translate(${padding}, ` + 0 + ")")
+       .call(yaxis);
+     
+  }
+
+  start_col()
+  
+     
+</script>
+  </body>
