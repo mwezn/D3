@@ -5,6 +5,7 @@ const fetch= require('node-fetch')
 
 
 
+
 async function get(URL){
     const requestOptions={
         method: 'GET',
@@ -41,6 +42,7 @@ router.post('/priceHist', async (req, res)=>{
 })
 
 router.post('/history', async (req, res)=>{
+  
   let query=req.body;
   console.log(req.body);
   let URL2='https://api.binance.com/api/v1/klines'
