@@ -9,15 +9,19 @@
 </head>
 <script src="https://d3js.org/d3.v4.js"></script>
 <body>
-    <div id="steps"></div>
-    <div id="container">
-    </div>
+<button id="shuffleArr">Run</button>
+<div id="steps"></div>
+<div id="container"></div>
 <script>
  var margin = {top: -200, right: 30, bottom: 30, left: 60},
         w = 700 - margin.left - margin.right,
         h = 400 - margin.top - margin.bottom;
     
 let dataset = [1,4,2,8,345,123,43,32,5643,63,123,43,2,55,1,234,92];
+
+document.getElementById('shuffleArr').onclick=function(){
+  bubbleSort(dataset)
+}
 
 var scale =d3.scaleLinear()
            .domain([d3.min(dataset),d3.max(dataset)])
@@ -32,25 +36,26 @@ async function bubbleSort(array) {
     let steps=0;
     let s=document.getElementById("steps")
     let n=array.length;
+    let newarr=[...array]
     let i=0;
     for (i;i<n;i++){
       for(let j=i+1;j<n+i;j++){
         s.innerHTML=""
         s.innerHTML=steps;
         await sleep(5)
-        let a=array[i]
-        let b=array[j]
+        let a=newarr[i]
+        let b=newarr[j]
         console.log(a,b)
         if (b<a) {
           steps++;
-          array[i]=b
+          newarr[i]=b
           steps++
-          array[j]=a
-          shift(array)
+          newarr[j]=a
+          shift(newarr)
         }
        }
     }
-    return array
+    //return array
  }
   
 
