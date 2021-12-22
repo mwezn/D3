@@ -9,6 +9,7 @@
 </head>
 <script src="https://d3js.org/d3.v4.js"></script>
 <body>
+    
     <div id="steps"></div>
     <div id="container">
     </div>
@@ -18,7 +19,7 @@
         h = 400 - margin.top - margin.bottom;
     
 let dataset = [1,4,2,8,345,123,43,32,5643,63,123,43,2,55,1,234,92];
-
+console.log(dataset)
 var scale =d3.scaleLinear()
            .domain([d3.min(dataset),d3.max(dataset)])
            .range((50,500))
@@ -31,22 +32,23 @@ const sleep = (milliseconds) => {
 async function bubbleSort(array) {
     let steps=0;
     let s=document.getElementById("steps")
-    let n=array.length;
+    let myarr=[...array]
+    let n=myarr.length;
     let i=0;
     for (i;i<n;i++){
       for(let j=i+1;j<n+i;j++){
         s.innerHTML=""
         s.innerHTML=steps;
         await sleep(5)
-        let a=array[i]
-        let b=array[j]
+        let a=myarr[i]
+        let b=myarr[j]
         console.log(a,b)
         if (b<a) {
           steps++;
-          array[i]=b
+          myarr[i]=b
           steps++
-          array[j]=a
-          shift(array)
+          myarr[j]=a
+          shift(myarr)
         }
        }
     }
@@ -99,6 +101,7 @@ svg.selectAll("text.index")
 bubbleSort(dataset)
 
 </script> 
+<button onclick="bubbleSort(dataset)">Reshuffle</button>
 </body>
 
 </html>

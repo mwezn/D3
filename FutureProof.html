@@ -1,0 +1,166 @@
+<html>
+<head>
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=News+Cycle&family=Staatliches&family=Rampart+One&display=swap');
+
+body {
+   background-image: linear-gradient(90deg, #cfe4f3 0%, #303aec 100%);
+}
+
+ div.container {
+    display:grid;
+    position: relative;
+    grid-template-rows: auto auto auto;
+    grid-template-columns: 80vw;
+    justify-content: center;
+    align-items: center;
+  }
+
+div.typingeff {
+  display:flex;
+  justify-content: center;
+  height:100px;
+}
+h1 {
+    font-family: 'Staatliches', cursive;
+    color: rgb(44, 117, 93);
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    border-right: 5px solid black;
+    width:22ch;
+    animation: typing 3s steps(22), blink .5s step-end infinite alternate;
+    
+}
+.myimg {
+    display:grid;
+    grid-template-columns: auto;
+    border:2px solid black;
+    border-radius:20px;
+    align-content: center;
+    justify-content: center;
+    overflow: hidden;
+    height: 50vh;
+
+    
+}
+img {
+    max-height:30em;
+    max-width: 500px;
+    object-fit: contain;
+    transition: all 0.3s;
+}
+img:hover  {
+  transform: scale(1.1);
+    
+}
+
+p {
+    font-family: 'News Cycle', sans-serif;
+    text-align: center;
+}
+ol {
+  font-family: 'Rampart One', cursive;
+  position: relative;
+  display:grid;
+  justify-content: center;
+  
+}
+html {
+  font-size: 16px;
+}
+@keyframes typing {
+  from {
+    width: 0
+  }
+
+}
+@keyframes blink {
+  50% {
+    border-color: transparent ;
+  }
+}
+@media screen and (min-width: 320px) {
+  html {
+    font-size: calc(16px + 6 * ((100vw - 320px) / 680));
+  }
+}
+@media screen and (min-width: 1000px) {
+  html {
+    font-size: 22px;
+  }
+}
+@media screen and (min-width:700px){
+  div.container {
+    display:grid;
+    position: relative;
+    grid-template-rows: auto;
+    grid-template-columns: auto auto;
+    
+  }
+  .myimg {
+    display:grid;
+    position: relative;
+    margin:50px 0 0 calc(100px - 5vw);
+    grid-template-columns: auto;
+    border:2px solid black;
+    border-radius:20px;
+    align-content: center;
+    justify-content: center;
+    overflow: hidden;
+    width: 80%;
+    max-height:100%;
+  }
+  h1 {
+    font-family: 'Staatliches', cursive;;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    border-right: 5px solid black;
+    width:20ch;
+    animation: typing 3s steps(22), blink .5s step-end infinite alternate;
+    
+}
+img {
+    max-height:30em;
+    max-width: 500px;
+    object-fit: contain;
+    transition: all 0.3s;
+}
+}
+</style>
+</head>
+<body>
+
+<header>
+<div class="container">
+<div>
+<div class="typingeff">
+<h1>Hello my name is Michael.</h1>
+</div>
+<p>Im a mathematics graduate & an amateur freelance developer. <br> Here are three statements about me <br> can you guess
+  which one is a lie?
+</p>
+<ol>
+  <li>
+      I am a twin
+  </li>
+  <li>
+      Ive been to Russia
+  </li>
+  <li>
+    I sleep with my eyes open
+  </li>
+  </ol>
+</div>
+<div class="myimg">
+    <img src="https://drive.google.com/uc?export=view&id=1Kfrij1bMQK9hgfZ8X2WekModWWh8d1rb" href="mypic"></img>
+</div>
+
+</div>
+</header>
+
+
+</body>
+</html>
