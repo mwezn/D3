@@ -2,10 +2,20 @@
 <head>
 <style>
 
-@import url('https://fonts.googleapis.com/css2?family=News+Cycle&family=Staatliches&family=Rampart+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=News+Cycle&family=Staatliches&family=Rampart+One&display=swap');
 
 body {
-   background-image: linear-gradient(90deg, #cfe4f3 0%, #303aec 100%);
+   background-image: linear-gradient(90deg,#d2e8f7 0%, #87c9f8 50%, #303aec 100%);
+}
+
+#beach{
+    background-image: url('https://drive.google.com/uc?export=view&id=1017I0Wr98aMIqDIt3H1kOuqw6kz6eg2H');
+    height: 110vh;
+    width:100vw;
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
  div.container {
@@ -22,9 +32,8 @@ div.typingeff {
   justify-content: center;
   height:100px;
 }
-h1 {
+.typingeff h1 {
     font-family: 'Staatliches', cursive;
-    color: rgb(44, 117, 93);
     text-align: center;
     white-space: nowrap;
     overflow: hidden;
@@ -41,13 +50,13 @@ h1 {
     align-content: center;
     justify-content: center;
     overflow: hidden;
-    height: 50vh;
+    max-height:100%;
+    max-width: 100%;
 
-    
 }
 img {
-    max-height:30em;
-    max-width: 500px;
+    max-height:100%;
+    max-width: 100%;
     object-fit: contain;
     transition: all 0.3s;
 }
@@ -62,11 +71,31 @@ p {
 }
 ol {
   font-family: 'Rampart One', cursive;
+  font-family: 'Cinzel Decorative', cursive;
   position: relative;
   display:grid;
   justify-content: center;
-  
 }
+
+ol li:nth-of-type(1){
+  color: rgb(130, 38, 216);
+}
+ol li:nth-of-type(2){
+  color: rgb(247, 153, 12)
+}
+
+ol li:nth-of-type(3){
+  color: teal;
+}
+
+form {
+  display:grid;
+  grid-template-rows: auto auto auto auto ;
+  grid-template-columns: 50vw;
+  justify-content: center;
+}
+
+
 html {
   font-size: 16px;
 }
@@ -91,7 +120,7 @@ html {
     font-size: 22px;
   }
 }
-@media screen and (min-width:700px){
+@media screen and (min-width:650px){
   div.container {
     display:grid;
     position: relative;
@@ -102,7 +131,7 @@ html {
   .myimg {
     display:grid;
     position: relative;
-    margin:50px 0 0 calc(100px - 5vw);
+    margin-left: 30px;
     grid-template-columns: auto;
     border:2px solid black;
     border-radius:20px;
@@ -110,9 +139,9 @@ html {
     justify-content: center;
     overflow: hidden;
     width: 80%;
-    max-height:100%;
+    max-height:70%;
   }
-  h1 {
+  .typingeff h1 {
     font-family: 'Staatliches', cursive;;
     text-align: center;
     white-space: nowrap;
@@ -124,7 +153,7 @@ html {
 }
 img {
     max-height:30em;
-    max-width: 500px;
+    max-width: 100%;
     object-fit: contain;
     transition: all 0.3s;
 }
@@ -139,7 +168,7 @@ img {
 <div class="typingeff">
 <h1>Hello my name is Michael.</h1>
 </div>
-<p>Im a mathematics graduate & an amateur freelance developer. <br> Here are three statements about me <br> can you guess
+<p>Im a mathematics graduate & an amateur freelance developer. <br> I enjoy reading, travelling, coding, swimming, cycling & football<br> Here are three statements about me <br> can you guess
   which one is a lie?
 </p>
 <ol>
@@ -147,16 +176,30 @@ img {
       I am a twin
   </li>
   <li>
-      Ive been to Russia
+      I've been to Russia
   </li>
   <li>
     I sleep with my eyes open
   </li>
-  </ol>
+</ol>
+<p>You can send me a message at the bottom of this webpage</p>
 </div>
 <div class="myimg">
     <img src="https://drive.google.com/uc?export=view&id=1Kfrij1bMQK9hgfZ8X2WekModWWh8d1rb" href="mypic"></img>
 </div>
+</div>
+<div id="beach">
+</div>
+<div>
+  <form action="action_page.php">
+  <label for="fname">Name</label>
+  <input type="text" id="fname" name="firstname" placeholder="Your name.." required>
+  <label for="lname">Email</label>
+  <input type="text" id="lname" name="lastname" placeholder="Your Email.." required>
+  <label for="subject">Message</label>
+  <textarea id="subject" name="subject" placeholder="Write something.." style="height:200px"></textarea>
+  <input type="submit" value="Send">
+ </form>
 
 </div>
 </header>
