@@ -9,15 +9,20 @@
 </head>
 <script src="https://d3js.org/d3.v4.js"></script>
 <body>
-    <div id="steps"></div>
-    <div id="container">
-    </div>
+<button id="shuffleArr">Run</button>
+<div id="steps"></div>
+<div id="container"></div>
 <script>
+
+
 let dataset = [1,4,2,8,345,123,43,32,5643,63,123,43,2,55,1,234,92,86,1000];
+document.getElementById('shuffleArr').onclick=function() {
+    selectionSort(dataset);
+}
 
 var margin = {top: -200, right: 30, bottom: 30, left: 60},
-        w = 700 - margin.left - margin.right,
-        h = 400 - margin.top - margin.bottom;
+        w = 2000 - margin.left - margin.right,
+        h = 700 - margin.top - margin.bottom;
 const sleep = (milliseconds) => {
     return new Promise(resolve => setTimeout(resolve, milliseconds))
 }
@@ -42,6 +47,7 @@ const min =(arr)=>{
 
 async function selectionSort(array) {
   let steps=0;
+  console.log(array,typeof(array))
   let s=document.getElementById("steps")
   let newarr=[...array]
   let n=array.length;
@@ -59,7 +65,7 @@ async function selectionSort(array) {
     steps++;
     shift(newarr)
   }
-  return newarr;
+  //return newarr;
 }
 
   
@@ -111,6 +117,7 @@ svg.selectAll("text.index")
 selectionSort(dataset);
 
 </script> 
+
 </body>
 
 </html>
