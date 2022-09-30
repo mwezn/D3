@@ -15,15 +15,15 @@
 <script>
 
 
-let dataset = [1,4,2,8,345,123,43,32,5643,63,123,43,2,55,1,234,92];
+let dataset = [1,4,2,8,345,123,43,32,5643,63,123,43,2,55,1,234,92,10000,980,7000,20000];
 
 document.getElementById('shuffleArr').onclick=function() {
     selectionSort(dataset);
 }
 
 var margin = {top: -200, right: 30, bottom: 30, left: 60},
-        w = 2000 - margin.left - margin.right,
-        h = 700 - margin.top - margin.bottom;
+        w = 900 - margin.left - margin.right,
+        h = 500 - margin.top - margin.bottom;
 const sleep = (milliseconds) => {
     return new Promise(resolve => setTimeout(resolve, milliseconds))
 }
@@ -71,7 +71,10 @@ async function selectionSort(array) {
 
   
 
-const svg = d3.select("#container").append("svg").attr("width", w + margin.left + margin.right).attr("height", h+500);
+const svg = d3.select("#container")
+           .append("svg")
+           .attr("width", w)
+           .attr("height", h);
 
 const shift =(arr)=> {
     d3.select("svg").remove();
@@ -80,14 +83,12 @@ let plot=svg.selectAll("rect")
    .data(arr)
    .enter()
    .append("rect")
-   //.attr("fill",(d)=>`#${d}`) nice black-grey-white color
    .attr("fill",(d)=>myColor(d))
    .attr("x", (d, i) => i * 30)
-   .attr("text", (d,i)=>d)
-   .attr("y", (d,i)=>h-2*d)
+   .attr("y", (d,i)=>h-50*Math.log(d))
    .attr("width", 20)
    .attr("height", (d, i) => {
-     return 3*d;
+     return 50*Math.log(d);
     });
 svg.selectAll("text")
        .data(arr)
@@ -95,7 +96,7 @@ svg.selectAll("text")
        .append("text")
        .attr("fill","blue")
        .attr("x", (d, i) => i * 30+3)
-       .attr("y", (d, i) => h - d-10)
+       .attr("y", (d, i) => h - 10*Math.log(d))
        .text(d=>d)
 svg.selectAll("text.index")
     .data(arr)
@@ -103,7 +104,7 @@ svg.selectAll("text.index")
     .append('text')
     .attr("fill", "red")
     .attr("x", (d, i) => i * 30+3)
-    .attr("y", (d, i) => h- 10 )
+    .attr("y", (d, i) => h- 100 )
     .text((d,i)=>i)
 }
 
