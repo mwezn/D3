@@ -15,13 +15,13 @@
 <script>
 
 
-let dataset = [1,4,2,8,345,123,43,32,5643,63,123,43,2,55,1,234,92,10000,980,7000,20000];
+let dataset = [1,20000, 7000, 4,2,8,345,123,43,32,5643,63,123,43,2,55,1,234,92,10000,980,30,20000];
 
 document.getElementById('shuffleArr').onclick=function() {
     selectionSort(dataset);
 }
 
-var margin = {top: -200, right: 30, bottom: 30, left: 60},
+var margin = {top: 10, right: 30, bottom: 30, left: 60},
         w = 900 - margin.left - margin.right,
         h = 500 - margin.top - margin.bottom;
 const sleep = (milliseconds) => {
@@ -31,7 +31,7 @@ const sleep = (milliseconds) => {
 var color = d3.scaleSequential().domain(dataset)
            .interpolator(d3.interpolateRainbow);
 let color2=d3.scaleLinear().domain([d3.min(dataset),d3.max(dataset)])
-           .range(["red","blue"])
+           .range(["yellow", "blue"])
 var myColor = d3.scaleSequential().domain([d3.min(dataset),d3.max(dataset)])
   .interpolator(d3.interpolateViridis);
 
@@ -68,22 +68,29 @@ async function selectionSort(array) {
   }
   //return newarr;
 }
+/*const svg = d3
+      .select("#container")
+      .append("svg")
+      .attr("preserveAspectRatio", "xMinYMin meet")
+      .attr("viewBox", `0 0 ${1.2*w} ${1.2*h}`)*/
 
-  
-
-const svg = d3.select("#container")
-           .append("svg")
-           .attr("width", w)
-           .attr("height", h);
 
 const shift =(arr)=> {
     d3.select("svg").remove();
-    const svg = d3.select("#container").append("svg").attr("width", w).attr("height", h);
+    const svg = d3
+      .select("#container")
+      .append("svg")
+      .attr("preserveAspectRatio", "xMinYMin meet")
+      .attr("viewBox", `0 0 ${1.2*w} ${1.2*h}`)
+    
+    
 let plot=svg.selectAll("rect")
    .data(arr)
    .enter()
    .append("rect")
-   .attr("fill",(d)=>myColor(d))
+   .attr("fill",(d)=>color2(d))
+   .attr("border", '2px')
+   .attr("style", "outline: 2px solid black")
    .attr("x", (d, i) => i * 30)
    .attr("y", (d,i)=>h-50*Math.log(d))
    .attr("width", 20)
@@ -108,7 +115,7 @@ svg.selectAll("text.index")
     .text((d,i)=>i)
 }
 
-selectionSort(dataset);
+shift(dataset);
 
 </script> 
 
