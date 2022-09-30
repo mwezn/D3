@@ -9,31 +9,20 @@
 </head>
 <script src="https://d3js.org/d3.v4.js"></script>
 <body>
-<<<<<<< HEAD
-    
-    <div id="steps"></div>
-    <div id="container">
-    </div>
-=======
 <button id="shuffleArr">Run</button>
 <div id="steps"></div>
 <div id="container"></div>
->>>>>>> be75e7c78f423f2d059eb411b10886233635ccf3
 <script>
  var margin = {top: -200, right: 30, bottom: 30, left: 60},
         w = 700 - margin.left - margin.right,
-        h = 400 - margin.top - margin.bottom;
+        h = 500 - margin.top - margin.bottom;
     
 let dataset = [1,4,2,8,345,123,43,32,5643,63,123,43,2,55,1,234,92];
-<<<<<<< HEAD
-console.log(dataset)
-=======
 
 document.getElementById('shuffleArr').onclick=function(){
   bubbleSort(dataset)
 }
 
->>>>>>> be75e7c78f423f2d059eb411b10886233635ccf3
 var scale =d3.scaleLinear()
            .domain([d3.min(dataset),d3.max(dataset)])
            .range((50,500))
@@ -46,30 +35,14 @@ const sleep = (milliseconds) => {
 async function bubbleSort(array) {
     let steps=0;
     let s=document.getElementById("steps")
-<<<<<<< HEAD
-    let myarr=[...array]
-    let n=myarr.length;
-=======
     let n=array.length;
     let newarr=[...array]
->>>>>>> be75e7c78f423f2d059eb411b10886233635ccf3
     let i=0;
     for (i;i<n;i++){
       for(let j=i+1;j<n+i;j++){
         s.innerHTML=""
         s.innerHTML=steps;
         await sleep(5)
-<<<<<<< HEAD
-        let a=myarr[i]
-        let b=myarr[j]
-        console.log(a,b)
-        if (b<a) {
-          steps++;
-          myarr[i]=b
-          steps++
-          myarr[j]=a
-          shift(myarr)
-=======
         let a=newarr[i]
         let b=newarr[j]
         console.log(a,b)
@@ -79,7 +52,6 @@ async function bubbleSort(array) {
           steps++
           newarr[j]=a
           shift(newarr)
->>>>>>> be75e7c78f423f2d059eb411b10886233635ccf3
         }
        }
     }
@@ -105,11 +77,10 @@ let plot=svg.selectAll("rect")
    .attr("fill","#2289ff") //#2289ff
    .attr("fill", (d)=> `rgb(${d},${d},${d})`)
    .attr("x", (d, i) => i * 30)
-   .attr("text", (d,i)=>d)
    .attr("y", (d,i)=>h-2*d)
    .attr("width", 20)
    .attr("height", (d, i) => {
-     return 3*d;
+     return 2*d;
     });
 svg.selectAll("text")
        .data(arr)
@@ -117,7 +88,7 @@ svg.selectAll("text")
        .append("text")
        .attr("fill","blue")
        .attr("x", (d, i) => i * 30+3)
-       .attr("y", (d, i) => h - d-20)
+       .attr("y", (d, i) => h - 10*Math.log(d))
        .text(d=>d)
 svg.selectAll("text.index")
     .data(arr)
@@ -125,14 +96,13 @@ svg.selectAll("text.index")
     .append('text')
     .attr("fill", "red")
     .attr("x", (d, i) => i * 30+3)
-    .attr("y", (d, i) => h )
+    .attr("y", (d, i) => h-100 )
     .text((d,i)=>i)
 }
 
-bubbleSort(dataset)
+shift(dataset)
 
 </script> 
-<button onclick="bubbleSort(dataset)">Reshuffle</button>
 </body>
 
 </html>

@@ -15,7 +15,8 @@
 <script>
 
 
-let dataset = [1,4,2,8,345,123,43,32,5643,63,123,43,2,55,1,234,92,86,1000];
+let dataset = [1,4,2,8,345,123,43,32,5643,63,123,43,2,55,1,234,92];
+
 document.getElementById('shuffleArr').onclick=function() {
     selectionSort(dataset);
 }
@@ -102,18 +103,10 @@ svg.selectAll("text.index")
     .append('text')
     .attr("fill", "red")
     .attr("x", (d, i) => i * 30+3)
-    .attr("y", (d, i) => h+10 )
+    .attr("y", (d, i) => h- 10 )
     .text((d,i)=>i)
 }
-/*setInterval(()=>{
-    let arr=[...dataset]
-    dataset=dataset.map(d=>2*d);
-    arr=[...dataset]
-    console.log(arr);
-    shift(arr)
-},2000)*/
 
-//shift(dataset)
 selectionSort(dataset);
 
 </script> 
