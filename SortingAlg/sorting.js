@@ -11,7 +11,7 @@ const min =(arr)=>{
 
 async function bubbleSort(array) {
     let steps=0;
-    let s=document.getElementById("steps")
+    let s=document.querySelector('p.bubble')
     let n=array.length;
     let newarr=[...array]
     let i=0;
@@ -38,7 +38,7 @@ async function bubbleSort(array) {
 async function selectionSort(array) {
   let steps=0;
   
-  let s=document.getElementById("steps")
+  let s=document.querySelector('p.select')
   let newarr=[...array]
   let n=array.length;
   for (let i=0;i<n;i++){

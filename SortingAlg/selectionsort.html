@@ -11,14 +11,16 @@
 <script src="https://d3js.org/d3.v4.js"></script>
 <body>
 
-<div id="steps"></div>
+
 <div class="container">
 <div id="bubbleSort">
   <h2>Bubble Sort</h2>
+  <p class="bubble"></p>
   <button id="bub">Run</button>
 </div>
 <div id="selectionSort">
   <h2>Selection Sort</h2>
+  <p class="select"></p>
   <button id="shuffleArr">Run</button>
 </div>
 </div>
@@ -37,7 +39,7 @@ document.getElementById('shuffleArr').onclick=function() {
 }
 
 var margin = {top: 10, right: 30, bottom: 30, left: 60},
-        w = 900 - margin.left - margin.right,
+        w = 800 - margin.left - margin.right,
         h = 600 - margin.top - margin.bottom;
 const sleep = (milliseconds) => {
     return new Promise(resolve => setTimeout(resolve, milliseconds))
@@ -56,8 +58,9 @@ const shift =(arr)=> {
     const svg = d3.select("#bubbleSort")
               .append("svg")
               .attr("class", "bubble")
-              .attr("width", w)
-              .attr("height", h);
+              //.attr("preserveAspectRatio", "xMinYMin meet")
+              .attr("width", "90%")
+              .attr("viewBox", `0 0 ${w} ${h}`)
     
   let plot=svg.selectAll("rect")
    .data(arr)
@@ -97,8 +100,9 @@ const shift2 =(arr)=> {
     const svg = d3.select("#selectionSort")
               .append("svg")
               .attr("class", "select")
-              .attr("width", w)
-              .attr("height", h);
+              .attr("preserveAspectRatio", "xMinYMin meet")
+              .attr("width", "90%")
+              .attr("viewBox", `0 0 ${w} ${h}`)
     
     
 let plot=svg.selectAll("rect")
