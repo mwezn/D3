@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Array Sorting</title>
     <link rel="stylesheet" href="styles.css">
 
 </head>
 <script src="https://d3js.org/d3.v4.js"></script>
 <body>
 
+<h1>Click the buttons below to see which sorting algorithm is the fastest</h1>
 
 <div class="container">
 <div id="bubbleSort">
@@ -41,9 +42,7 @@ document.getElementById('shuffleArr').onclick=function() {
 var margin = {top: 10, right: 30, bottom: 30, left: 60},
         w = 800 - margin.left - margin.right,
         h = 600 - margin.top - margin.bottom;
-const sleep = (milliseconds) => {
-    return new Promise(resolve => setTimeout(resolve, milliseconds))
-}
+
 
 var color = d3.scaleSequential().domain(dataset)
            .interpolator(d3.interpolateRainbow);

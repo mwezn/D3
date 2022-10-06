@@ -1,4 +1,9 @@
 
+const sleep = (milliseconds) => {
+    return new Promise(resolve => setTimeout(resolve, milliseconds))
+}
+
+
 const min =(arr)=>{
     let min= Infinity;
     let n=arr.length;
@@ -37,7 +42,6 @@ async function bubbleSort(array) {
 
 async function selectionSort(array) {
   let steps=0;
-  
   let s=document.querySelector('p.select')
   let newarr=[...array]
   let n=array.length;
