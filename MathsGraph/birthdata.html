@@ -94,7 +94,7 @@ function countElements(i){
 
 
 
-d3.csv('birthdata.csv', function(data){
+d3.csv('sf_gestationdata.csv', function(data){
   var mydata=[]
   console.log(data[0],dailyDiff(data[28].birthdate-data[28].duedate)+280)
   data.forEach(function(d,i){
