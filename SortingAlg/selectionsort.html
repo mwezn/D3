@@ -5,17 +5,32 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="styles.css">
 
 </head>
 <script src="https://d3js.org/d3.v4.js"></script>
 <body>
-<button id="shuffleArr">Run</button>
+
 <div id="steps"></div>
-<div id="container"></div>
+<div class="container">
+<div id="bubbleSort">
+  <h2>Bubble Sort</h2>
+  <button id="bub">Run</button>
+</div>
+<div id="selectionSort">
+  <h2>Selection Sort</h2>
+  <button id="shuffleArr">Run</button>
+</div>
+</div>
+<script src="sorting.js"></script>
 <script>
 
 
 let dataset = [1,20000, 7000, 4,2,8,345,123,43,32,5643,63,123,43,2,55,1,234,92,10000,980,30,20000];
+
+document.getElementById('bub').onclick=function() {
+   bubbleSort(dataset);
+}
 
 document.getElementById('shuffleArr').onclick=function() {
     selectionSort(dataset);
@@ -23,7 +38,7 @@ document.getElementById('shuffleArr').onclick=function() {
 
 var margin = {top: 10, right: 30, bottom: 30, left: 60},
         w = 900 - margin.left - margin.right,
-        h = 500 - margin.top - margin.bottom;
+        h = 600 - margin.top - margin.bottom;
 const sleep = (milliseconds) => {
     return new Promise(resolve => setTimeout(resolve, milliseconds))
 }
@@ -36,55 +51,15 @@ var myColor = d3.scaleSequential().domain([d3.min(dataset),d3.max(dataset)])
   .interpolator(d3.interpolateViridis);
 
 
-const min =(arr)=>{
-    let min= Infinity;
-    let n=arr.length;
-    let i=0;
-    for (i;i<n;i++){
-        if (arr[i]<min) min=arr[i]
-    }
-    return min;
-}
-
-async function selectionSort(array) {
-  let steps=0;
-  console.log(array,typeof(array))
-  let s=document.getElementById("steps")
-  let newarr=[...array]
-  let n=array.length;
-  for (let i=0;i<n;i++){
-    
-    s.innerHTML=""
-    s.innerHTML=steps;
-    await sleep(100)
-    let a=newarr[i]
-    let tmp=newarr.slice(i,n)
-    let cut=newarr.lastIndexOf(min(tmp))
-    newarr[i]=min(tmp)
-    steps++;
-    newarr[cut]=a
-    steps++;
-    shift(newarr)
-  }
-  //return newarr;
-}
-/*const svg = d3
-      .select("#container")
-      .append("svg")
-      .attr("preserveAspectRatio", "xMinYMin meet")
-      .attr("viewBox", `0 0 ${1.2*w} ${1.2*h}`)*/
-
-
 const shift =(arr)=> {
-    d3.select("svg").remove();
-    const svg = d3
-      .select("#container")
-      .append("svg")
-      .attr("preserveAspectRatio", "xMinYMin meet")
-      .attr("viewBox", `0 0 ${1.2*w} ${1.2*h}`)
+    d3.select("svg.bubble").remove();
+    const svg = d3.select("#bubbleSort")
+              .append("svg")
+              .attr("class", "bubble")
+              .attr("width", w)
+              .attr("height", h);
     
-    
-let plot=svg.selectAll("rect")
+  let plot=svg.selectAll("rect")
    .data(arr)
    .enter()
    .append("rect")
@@ -115,9 +90,54 @@ svg.selectAll("text.index")
     .text((d,i)=>i)
 }
 
+
+const shift2 =(arr)=> {
+    
+    d3.select("svg.select").remove();
+    const svg = d3.select("#selectionSort")
+              .append("svg")
+              .attr("class", "select")
+              .attr("width", w)
+              .attr("height", h);
+    
+    
+let plot=svg.selectAll("rect")
+   .data(arr)
+   .enter()
+   .append("rect")
+   .attr("fill",(d)=>color2(d))
+   .attr("border", '2px')
+   .attr("style", "outline: 2px solid blue")
+   .attr("x", (d, i) => i * 30)
+   .attr("y", (d,i)=>h-50*Math.log(d))
+   .attr("width", 20)
+   .attr("height", (d, i) => {
+     return 50*Math.log(d);
+    });
+svg.selectAll("text")
+       .data(arr)
+       .enter()
+       .append("text")
+       .attr("fill","blue")
+       .attr("x", (d, i) => i * 30+3)
+       .attr("y", (d, i) => h - 10*Math.log(d))
+       .text(d=>d)
+svg.selectAll("text.index")
+    .data(arr)
+    .enter()
+    .append('text')
+    .attr("fill", "red")
+    .attr("x", (d, i) => i * 30+3)
+    .attr("y", (d, i) => h- 100 )
+    .text((d,i)=>i)
+}
+
+
 shift(dataset);
+shift2(dataset)
 
 </script> 
+
 
 </body>
 
