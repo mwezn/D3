@@ -9,7 +9,7 @@
 
 <script>
     var width=1000
-    var height=1000
+    var height=500
     var magFactor=600
     const svg = d3.select('#fractal')
       .append('svg')
@@ -54,7 +54,7 @@
         for (let i=0;i<width;i++){
             var x=x1
             for (let j=0;j<height;j++){
-                var belongs=CheckMandel(x,y)
+                var belongs=CheckMandel2(x,y)
                 if (belongs){
                     svg.append('circle')
                         .style('fill','lightgreen')
@@ -97,16 +97,13 @@ function CheckMandel2(x,y){
         var s=0.0
         for (let k=0;k<loops;k++){
             s= addcomplex(multcomplex(s,s),a)
+            if (s.abs()<=2) return true;
         }
-          
-
-if (s.abs()<=2)
-    return true; // In the Mandelbrot set
-
-return false; // Not in the set
+         // In the Mandelbrot set
+        return false; // Not in the set
 }
 
-    mandelbrot(-2,2,2,-2)
+mandelbrot(-2,2,2,-2)
 
 
 
