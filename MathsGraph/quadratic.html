@@ -88,7 +88,7 @@ const svg = d3.select("#Q")
        .append("circle")
        .attr("cx", (d)=> xscale(d[0]))
        .attr("cy", (d)=> yscale(d[1]))
-       .attr("r", 3)
+       .attr("r", 2)
        .attr("fill","blue");
    const Xaxis=d3.axisBottom(xscale);
    const Yaxis=d3.axisLeft(yscale);
