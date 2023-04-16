@@ -11,9 +11,13 @@
     
     <div id="my_dataviz"></div>
 <script>
+
+    //Sun 16th april 2023: Started interactive D3 graph of math functions!
+    //Have draggable cursor on the chart of x**2, x**3 etc
+    
     const g=(x)=> x**2;
     let arr=[]
-    for (let i=-10;i<10;i++){
+    for (let i=-10;i<=10;i++){
         arr.push([i,g(i)])
 
     }
@@ -126,6 +130,7 @@ const shift =(arr)=> {
        var x0 = x.invert(d3.mouse(this)[0])  //Important!
        var i=bisect(arr,x0,1)
        var currentData=arr.slice(0,i)
+       var currentData2=arr.slice(0,i+1)
        h1.style("font-family",'arial')
        l.attr("x1",x(arr[i][0]))
        l.attr("y1",y(arr[i][1]))
@@ -133,10 +138,10 @@ const shift =(arr)=> {
        l.attr("y2",y(d3.min(arr,(d)=>d[1])));
        focus.attr("cx",x(arr[i][0]))
        focus.attr("cy",y(arr[i][1]))
-       focusTxt.text(`x: ${arr[i][0]}  y: + ${arr[i][1]}`)
+       focusTxt.text(`x: ${arr[i][0]}  y: ${arr[i][1]}`)
        focusTxt.attr('x',x(arr[i][0])-10)
        focusTxt.attr('y',y(arr[i][1]))
-       a.attr("d", area(currentData))
+       a.attr("d", area(currentData2))
      })
      .on("mouseleave",function(){
        a.style("opacity",0)
