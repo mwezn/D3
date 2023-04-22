@@ -7,21 +7,56 @@
     <title>Document</title>
 </head>
 <script src="https://d3js.org/d3.v4.js"></script>
+<script src='https://unpkg.com/mathjs@6.2.3/dist/math.js'></script>
 <body>
-    
+    <div class="slidecontainer">
+        <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
+        <h5 id="slideValue"></h5>
+        <input type="text" id="expr" value=""></input>
+
+      </div>
     <div id="my_dataviz"></div>
 <script>
 
     //Sun 16th april 2023: Started interactive D3 graph of math functions!
     //Have draggable cursor on the chart of x**2, x**3 etc
+   
+    var slider = document.getElementById("myRange");
+    var h5=document.getElementById('slideValue')
+    h5.innerHTML=slider.value;
+
+    var expr=document.getElementById('expr')
+    let func;
+    expr.oninput= (e)=>{
+      console.log(e.target.value)
+      func=new Function("x", `return ${e.target.value}`)
+      let arr=[]
+      /*if (e.target.value=='Math.sin(x)'){
+        for (let i=-2*Math.PI;i<=2*Math.PI;i+=0.1){
+        arr.push([i,func(i)])
+      }
+
+      }*/
+      for (let i=-5;i<=5;i+=0.1){
+        arr.push([i,func(i)])
+      }
+      console.log(func,func(2),arr)
+      shift(arr)
+    }
+    slider.oninput = function() {
+      console.log(this.value);
+      h5.innerHTML=this.value;
+    } 
     
     const g=(x)=> x**2;
-    let arr=[]
-    for (let i=-10;i<=10;i++){
-        arr.push([i,g(i)])
+    const cube=(x)=>x**3;
+    const exp = (x) => Math.exp(x)
+    /*let arr=[]
+    for (let i=-5;i<=2;i++){
+        arr.push([i,func(i)])
 
     }
-    console.log(arr)
+    console.log(arr)*/
 
       var padding= 100;
   var margin = {top: 10, right: 30, bottom: 30, left: 60},
@@ -130,7 +165,8 @@ const shift =(arr)=> {
        var x0 = x.invert(d3.mouse(this)[0])  //Important!
        var i=bisect(arr,x0,1)
        var currentData=arr.slice(0,i)
-       var currentData2=arr.slice(0,i+1)
+       console.log(i,arr.length)
+       var currentData2=i?arr.slice(0,i+1):arr.slice(0,arr.length)
        h1.style("font-family",'arial')
        l.attr("x1",x(arr[i][0]))
        l.attr("y1",y(arr[i][1]))
@@ -180,7 +216,7 @@ const shift =(arr)=> {
    
 }
 
-shift(arr)
+//shift(arr)
    
     
     
