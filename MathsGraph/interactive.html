@@ -8,11 +8,14 @@
 </head>
 <script src="https://d3js.org/d3.v4.js"></script>
 <script src='https://unpkg.com/mathjs@6.2.3/dist/math.js'></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML.js"></script>
 <body>
     <div class="slidecontainer">
         <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
         <h5 id="slideValue"></h5>
+        <h2>Type in expression below</h2>
         <input type="text" id="expr" value=""></input>
+        <h2 id="latex"></h2>
 
       </div>
     <div id="my_dataviz"></div>
@@ -26,21 +29,29 @@
     h5.innerHTML=slider.value;
 
     var expr=document.getElementById('expr')
+    var latex=document.getElementById('latex')
     let func;
+    
     expr.oninput= (e)=>{
       console.log(e.target.value)
+      
       func=new Function("x", `return ${e.target.value}`)
+      //let expression='$$'+ math.parse(`${e.target.value}`).toTex() + '$$'
+      let expression='$$'+ math.parse(`${e.target.value}`).toTex() + '$$'
+      console.log(math.parse(`${e.target.value}`).toTex())
+      console.log(expression)
+      latex.innerHTML=expression
       let arr=[]
-      /*if (e.target.value=='Math.sin(x)'){
-        for (let i=-2*Math.PI;i<=2*Math.PI;i+=0.1){
+      if (e.target.value=='Math.sin(x)'){
+        for (let i=-2*Math.PI;i<=2*Math.PI;i+=1.5){
         arr.push([i,func(i)])
       }
 
-      }*/
-      for (let i=-5;i<=5;i+=0.1){
+      }
+      for (let i=-5;i<=5;i+=0.5){
         arr.push([i,func(i)])
       }
-      console.log(func,func(2),arr)
+      MathJax.Hub.Typeset();
       shift(arr)
     }
     slider.oninput = function() {
@@ -165,7 +176,7 @@ const shift =(arr)=> {
        var x0 = x.invert(d3.mouse(this)[0])  //Important!
        var i=bisect(arr,x0,1)
        var currentData=arr.slice(0,i)
-       console.log(i,arr.length)
+      // console.log(i,arr.length)
        var currentData2=i?arr.slice(0,i+1):arr.slice(0,arr.length)
        h1.style("font-family",'arial')
        l.attr("x1",x(arr[i][0]))
