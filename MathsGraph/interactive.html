@@ -14,6 +14,7 @@
         <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
         <h5 id="slideValue"></h5>
         <h2>Type in expression below</h2>
+        <h3>Use either ** or ^ for exponents</h3>
         <input type="text" id="expr" value=""></input>
         <h2 id="latex"></h2>
 
@@ -34,23 +35,38 @@
     
     expr.oninput= (e)=>{
       console.log(e.target.value)
+      let newvalue=e.target.value.replace('**', '^')
       
-      func=new Function("x", `return ${e.target.value}`)
+      func=new Function("x", `return ${e.target.value.replace('^','**')}`)
       //let expression='$$'+ math.parse(`${e.target.value}`).toTex() + '$$'
-      let expression='$$'+ math.parse(`${e.target.value}`).toTex() + '$$'
-      console.log(math.parse(`${e.target.value}`).toTex())
+      let expression='$$'+ 'y='+math.parse(`${newvalue}`).toTex() + '$$'
+      console.log(math.parse(`${newvalue}`).toTex())
       console.log(expression)
+      console.log(math.simplify(newvalue))
       latex.innerHTML=expression
       let arr=[]
       if (e.target.value=='Math.sin(x)'){
         for (let i=-2*Math.PI;i<=2*Math.PI;i+=1.5){
+          arr.push([i,func(i)])
+        }
+      }
+    
+    else if(e.target.value=='Math.log(x)'){
+        for (let i=0.001;i<10;i+=0.001){
+          console.log(i,func(i))
+          arr.push([i,func(i)])
+        }
+
+    }
+    else {
+      for (let i=-5;i<=5;i+=1){
         arr.push([i,func(i)])
       }
 
-      }
-      for (let i=-5;i<=5;i+=0.5){
-        arr.push([i,func(i)])
-      }
+    }
+
+      
+      
       MathJax.Hub.Typeset();
       shift(arr)
     }
@@ -58,16 +74,7 @@
       console.log(this.value);
       h5.innerHTML=this.value;
     } 
-    
-    const g=(x)=> x**2;
-    const cube=(x)=>x**3;
-    const exp = (x) => Math.exp(x)
-    /*let arr=[]
-    for (let i=-5;i<=2;i++){
-        arr.push([i,func(i)])
-
-    }
-    console.log(arr)*/
+  
 
       var padding= 100;
   var margin = {top: 10, right: 30, bottom: 30, left: 60},
