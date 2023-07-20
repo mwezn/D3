@@ -113,6 +113,10 @@
       function mouseover() {
         focus.style("opacity", 1)
         focusText.style("opacity",1)
+        console.log(data)
+        console.log(data[0])
+        console.log(Object.keys(data[0]))
+        console.log(Object.values(data[0]))
        
         l.style("opacity",1)
       }
@@ -122,7 +126,7 @@
         var x0 = x.invert(d3.mouse(this)[0]);
         var i = bisect(data, x0, 1);
         selectedData = data[i]
-        console.log(selectedData)
+        //console.log(selectedData)
         l.attr("x1",x(selectedData.x))
         l.attr("y1",y(selectedData.y))
         l.attr("x2",x(selectedData.x))

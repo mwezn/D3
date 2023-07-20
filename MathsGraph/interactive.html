@@ -17,6 +17,11 @@
         <h3>Use either ** or ^ for exponents</h3>
         <input type="text" id="expr" value=""></input>
         <h2 id="latex"></h2>
+        <br>
+        <h2>Type in fractional odds </h2>
+        <input type="text" id="odds" value=""></input>
+        <h2 id="fracodds"></h2>
+        <h2 id="impliedProb"></h2>
 
       </div>
     <div id="my_dataviz"></div>
@@ -32,6 +37,9 @@
     var expr=document.getElementById('expr')
     var latex=document.getElementById('latex')
     let func;
+
+    var odds= document.getElementById('odds')
+
     
     expr.oninput= (e)=>{
       console.log(e.target.value)
@@ -40,9 +48,6 @@
       func=new Function("x", `return ${e.target.value.replace('^','**')}`)
       //let expression='$$'+ math.parse(`${e.target.value}`).toTex() + '$$'
       let expression='$$'+ 'y='+math.parse(`${newvalue}`).toTex() + '$$'
-      console.log(math.parse(`${newvalue}`).toTex())
-      console.log(expression)
-      console.log(math.simplify(newvalue))
       latex.innerHTML=expression
       let arr=[]
       if (e.target.value=='Math.sin(x)'){
@@ -52,7 +57,14 @@
       }
     
     else if(e.target.value=='Math.log(x)'){
-        for (let i=0.001;i<10;i+=0.001){
+        for (let i=0.0001;i<5;i+=0.0001){
+          console.log(i,func(i))
+          arr.push([i,func(i)])
+        }
+
+    }
+    else if(e.target.value=='Math.sqrt(x)'){
+        for (let i=0;i<10;i++){
           console.log(i,func(i))
           arr.push([i,func(i)])
         }
@@ -70,6 +82,21 @@
       MathJax.Hub.Typeset();
       shift(arr)
     }
+ 
+    odds.oninput =(e)=>{
+      console.log(e.target.value)
+      let splitRes=e.target.value.split("/")
+      let numFormat= splitRes.map(d=>Number(d))
+      let h2=document.getElementById('fracodds')
+      let h22=document.getElementById('impliedProb')
+      console.log(splitRes,numFormat)
+      let calculation= numFormat.reduce((a,b)=>a+b,0)
+      let result=calculation/splitRes[1]
+      h2.innerHTML=isNaN(result)||result==Infinity?`Decimal odds:`:`Decimal odds: ${result}`
+      h22.innerHTML=isNaN(result)||result==Infinity?`Implied probability:`:`Implied probability: ${100/result} %`
+      console.log(calculation,result.toPrecision(3))
+    }
+
     slider.oninput = function() {
       console.log(this.value);
       h5.innerHTML=this.value;
@@ -143,6 +170,16 @@ const shift =(arr)=> {
         .append('line')
           .style("stroke","green")
           .style("opacity",0)
+      var xline=svg
+        .append('g')
+        .append('line')
+          .style("stroke","red")
+          .style("opacity",1)
+          .attr("x1",x(-5))
+       .attr("y1",y(0))
+       .attr("x2",x(5))
+       .attr("y2",y(0));
+
       var h1 = d3.select('h1');
       svg
         .append("path")
