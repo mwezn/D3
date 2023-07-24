@@ -14,17 +14,17 @@ const headings = arr[0].split("\n")[0].split(",")
 //Use the following to remove brackets from losses column
 //str.replace(/[{()}]/g, ''); 
 lastBet[11]=lastBet[11].replace(/[()]/g, '-').slice(0,lastBet[11].length-1)
-console.log(allBets)
+console.log(allBets,arr)
 
 let tidiedData=[]
+tidiedData.push(allBets[0])
 for (let i=1;i<allBets.length;i++){
-    //console.log(allBets[i].replace(/[()]/g, '-').slice(0,allBets[i].length-1))
     tidiedData.push(allBets[i].replace(/[()]/g, '-').slice(0,allBets[i].length-1))
 }
 
 fs.writeFileSync("cleanBetData.csv",tidiedData.join("\n") )
 
-console.log(tidiedData.join("\n"))
+
 
 
 
