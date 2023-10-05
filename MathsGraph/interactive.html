@@ -18,10 +18,11 @@
         <input type="text" id="expr" value=""></input>
         <h2 id="latex"></h2>
         <br>
-        <h2>Type in fractional odds </h2>
-        <input type="text" id="odds" value=""></input>
-        <h2 id="fracodds"></h2>
-        <h2 id="impliedProb"></h2>
+         <h2>Type in domain </h2>
+        <input type="text" id="domain-min" value="-5"></input>
+        <= x <=
+        <input type="text" id="domain-max" value="5"></input>
+    
 
       </div>
     <div id="my_dataviz"></div>
@@ -38,84 +39,8 @@
     var latex=document.getElementById('latex')
     let func;
 
-    var odds= document.getElementById('odds')
-
-    
-    expr.oninput= (e)=>{
-      console.log(e.target.value)
-      let newvalue=e.target.value.replace('**', '^')
-      
-      func=new Function("x", `return ${e.target.value.replace('^','**')}`)
-      //let expression='$$'+ math.parse(`${e.target.value}`).toTex() + '$$'
-      let expression='$$'+ 'y='+math.parse(`${newvalue}`).toTex() + '$$'
-      latex.innerHTML=expression
-      let arr=[]
-      if (e.target.value=='Math.sin(x)'){
-        for (let i=-2*Math.PI;i<=2*Math.PI;i+=1.5){
-          arr.push([i,func(i)])
-        }
-      }
-    
-    else if(e.target.value=='Math.log(x)'){
-        for (let i=0.0001;i<5;i+=0.0001){
-          console.log(i,func(i))
-          arr.push([i,func(i)])
-        }
-
-    }
-    else if(e.target.value=='Math.sqrt(x)'){
-        for (let i=0;i<10;i++){
-          console.log(i,func(i))
-          arr.push([i,func(i)])
-        }
-
-    }
-    else {
-      for (let i=-5;i<=5;i+=1){
-        arr.push([i,func(i)])
-      }
-
-    }
-
-      
-      
-      MathJax.Hub.Typeset();
-      shift(arr)
-    }
- 
-    odds.oninput =(e)=>{
-      console.log(e.target.value)
-      let splitRes=e.target.value.split("/")
-      let numFormat= splitRes.map(d=>Number(d))
-      let h2=document.getElementById('fracodds')
-      let h22=document.getElementById('impliedProb')
-      console.log(splitRes,numFormat)
-      let calculation= numFormat.reduce((a,b)=>a+b,0)
-      let result=calculation/splitRes[1]
-      h2.innerHTML=isNaN(result)||result==Infinity?`Decimal odds:`:`Decimal odds: ${result}`
-      h22.innerHTML=isNaN(result)||result==Infinity?`Implied probability:`:`Implied probability: ${100/result} %`
-      console.log(calculation,result.toPrecision(3))
-    }
-
-    slider.oninput = function() {
-      console.log(this.value);
-      h5.innerHTML=this.value;
-    } 
-  
-
-      var padding= 100;
-  var margin = {top: 10, right: 30, bottom: 30, left: 60},
-        width = 1000 - margin.left - margin.right,
-        height = 600 - margin.top - margin.bottom;
-    
-
-    var svg = d3.select("#my_dataviz")
-      .append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-        .attr("transform",
-              "translate(" + margin.left + "," + margin.top + ")");
+    var domainmin= document.getElementById('domain-min')
+    var domainmax=document.getElementById('domain-max')
 
 const shift =(arr)=> {
     d3.select("svg").remove();
@@ -124,13 +49,6 @@ const shift =(arr)=> {
               .attr("width", width)
               .attr("height", height);
 
-
-  const mindate= new Date(d3.min(arr,(d)=>d[0]))
-  
-  const maxdate= new Date(d3.max(arr,(d)=>d[0])); 
-  /*const Xscale=d3.scaleTime() 
-      .domain([mindate,maxdate])
-      .range([0+padding,width-padding]);*/
 
   const Xscale=d3.scaleLinear() //Change this back??
       .domain([d3.min(arr,(d)=>d[0]),d3.max(arr,(d)=>d[0])])
@@ -270,6 +188,93 @@ const shift =(arr)=> {
      .call(yaxis);
    
 }
+    
+    
+
+    expr.oninput= (e)=>{
+      console.log(e.target.value)
+      let newvalue=e.target.value.replace('**', '^')
+      
+      func=new Function("x", `return ${e.target.value.replace('^','**')}`)
+      //let expression='$$'+ math.parse(`${e.target.value}`).toTex() + '$$'
+      let expression='$$'+ 'y='+math.parse(`${newvalue}`).toTex() + '$$'
+      latex.innerHTML=expression
+      let arr=[]
+      if (e.target.value=='Math.sin(x)'){
+        for (let i=-2*Math.PI;i<=2*Math.PI;i+=1.5){
+          arr.push([i,func(i)])
+        }
+      }
+    
+    else if(e.target.value=='Math.log(x)'){
+        for (let i=0.0001;i<5;i+=0.0001){
+          console.log(i,func(i))
+          arr.push([i,func(i)])
+        }
+
+    }
+    else if(e.target.value=='Math.sqrt(x)'){
+        for (let i=0;i<10;i++){
+          console.log(i,func(i))
+          arr.push([i,func(i)])
+        }
+
+    }
+    else {
+      for (let i=-5;i<=5;i+=1){
+        arr.push([i,func(i)])
+      }
+
+    }
+
+      
+      
+      MathJax.Hub.Typeset();
+      shift(arr)
+    }
+ 
+  
+    slider.oninput = function() {
+      console.log(this.value);
+      h5.innerHTML=this.value;
+    } 
+  
+
+      var padding= 100;
+  var margin = {top: 10, right: 30, bottom: 30, left: 60},
+        width = 1000 - margin.left - margin.right,
+        height = 600 - margin.top - margin.bottom;
+    
+
+    var svg = d3.select("#my_dataviz")
+      .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+        .attr("transform",
+              "translate(" + margin.left + "," + margin.top + ")");
+
+domainmin.oninput= (e)=>{
+      console.log(Number(e.target.value))
+      let arr=[]
+      let func=new Function("x", `return x**2`)
+      for(let i=Number(e.target.value);i<domainmax.value;i+=1){
+        arr.push([i,func(i)])
+      }
+      shift(arr)
+
+    }
+domainmax.oninput= (e)=>{
+      console.log(Number(e.target.value))
+      let arr1=[]
+      let func=new Function("x", `return x**2`)
+      for(let i=Number(domainmin.value); i<Number(e.target.value);i+=1){
+        arr1.push([i,func(i)])
+      }
+      shift(arr1)
+}
+
+//let arr=[[0,0],[1,1],[2,2]] //animate this starting from [0,0] then type other arrays!
 
 //shift(arr)
    
