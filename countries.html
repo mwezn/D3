@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bordering Countries Network Graph</title>
+  <script src="https://d3js.org/d3.v6.min.js"></script>
+</head>
+<body>
+
+<div id="graph-container"></div>
+<button onclick="fetchJson()">Fetch all countries</button>
+
+<ul id="all"></ul>
+
+<script>
+// Sample data (replace with your own dataset)
+var list=document.getElementById('all');
+const fetchJson= ()=> {
+  fetch('/all')
+  .then(d=>d.json())
+  .then(json=>{
+     json.forEach(i=>console.log(i))
+  })
+}
+
+
+const countries = [
+  { id: "USA", name: "United States", borders: ["Canada", "Mexico"] },
+  { id: "Canada", name: "Canada", borders: ["USA"] },
+  { id: "Mexico", name: "Mexico", borders: ["USA"] },
+  { id:"France", name: "France", continent: "Europe", borders: ["Spain"]
+  },
+  { id:"Spain", name: "Spain",continent: "Europe", borders: ["France"]
+  },
+  {id:"Morocco", name:"Morocco", continent:"Africa", borders:["Algeria","Spain"]},
+  {id:"Algeria", name:"Algeria", continent:"Africa", borders:["Morocco"]},
+
+  {id: "Germany", name:"Germany", continent:"Europe", borders:["France", "Poland"]},
+  {id: "Poland", name:"Poland", continent:"Europe", borders:["Germany"]},
+
+  {id: "UK", name:"UK", continent:"Europe", borders:["Ireland", "France"]},
+  {id: "Ireland", name:"Ireland", continent:"Europe", borders:["UK"]},
+  {id: "Italy", name:"Italy", continent: "Europe", borders:["France"]}
+  
+
+  
+  
+];
+
+// Set up the SVG container
+const width = 600;
+const height = 400;
+
+const svg = d3.select("#graph-container")
+  .append("svg")
+  .attr("width", width)
+  .attr("height", height);
+
+// Create a force simulation
+const simulation = d3.forceSimulation()
+  .force("link", d3.forceLink().id(d => d.id))
+  .force("charge", d3.forceManyBody().strength(-50))
+  .force("center", d3.forceCenter(width / 2, height / 2));
+
+// Create links based on borders
+const links = [];
+countries.forEach(country => {
+  country.borders.forEach(border => {
+    links.push({ source: country.id, target: border });
+  });
+});
+
+// Create the graph
+const link = svg.selectAll(".link")
+  .data(links)
+  .enter().append("line")
+  .attr("class", "link")
+  .attr("stroke", "green")
+
+const node = svg.selectAll(".node")
+  .data(countries)
+  .enter()
+  .append("circle")
+  .attr("class", "node")
+  .attr("r", 15)
+  .call(d3.drag()
+    .on("start", dragstarted)
+    .on("drag", dragged)
+    .on("end", dragended))
+  .style("fill", d=>d.continent=="Europe"?"green":d.continent=="Africa"?"yellow":"blue")
+
+  
+    const textD= svg.selectAll("text")
+       .data(countries)
+       .enter()
+       .append("text")
+       .attr("fill","black")
+       .attr("x", (d,i)=>100+i*75)
+       .attr("y",(d,i)=>100+i*75)
+       .text(d=>d.id)
+       
+
+// Update the simulation
+simulation.nodes(countries)
+  .on("tick", ticked);
+
+simulation.force("link")
+  .links(links);
+
+// Define the tick function
+function ticked() {
+  link
+    .attr("x1", d => d.source.x)
+    .attr("y1", d => d.source.y)
+    .attr("x2", d => d.target.x)
+    .attr("y2", d => d.target.y);
+
+  node
+    .attr("cx", d => d.x)
+    .attr("cy", d => d.y)
+    
+  textD
+    .attr('x',d=>d.x)
+    .attr('y',d=>d.y)
+  
+  
+    
+    
+}
+
+// Define drag functions
+function dragstarted(event, d) {
+  if (!event.active) simulation.alphaTarget(0.3).restart();
+  d.fx = d.x;
+  d.fy = d.y;
+}
+
+function dragged(event, d) {
+  d.fx = event.x;
+  d.fy = event.y;
+}
+
+function dragended(event, d) {
+  if (!event.active) simulation.alphaTarget(0);
+  d.fx = null;
+  d.fy = null;
+}
+</script>
+
+
+
+</body>
+</html>
+

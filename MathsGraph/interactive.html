@@ -10,9 +10,7 @@
 <script src='https://unpkg.com/mathjs@6.2.3/dist/math.js'></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML.js"></script>
 <body>
-    <div class="slidecontainer">
-        <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
-        <h5 id="slideValue"></h5>
+    <div>
         <h2>Type in expression below</h2>
         <h3>Use either ** or ^ for exponents</h3>
         <input type="text" id="expr" value=""></input>
@@ -31,10 +29,6 @@
     //Sun 16th april 2023: Started interactive D3 graph of math functions!
     //Have draggable cursor on the chart of x**2, x**3 etc
    
-    var slider = document.getElementById("myRange");
-    var h5=document.getElementById('slideValue')
-    h5.innerHTML=slider.value;
-
     var expr=document.getElementById('expr')
     var latex=document.getElementById('latex')
     let func;
@@ -93,9 +87,9 @@ const shift =(arr)=> {
         .append('line')
           .style("stroke","red")
           .style("opacity",1)
-          .attr("x1",x(-5))
+          .attr("x1",x(d3.min(arr,(d)=> d[0])))
        .attr("y1",y(0))
-       .attr("x2",x(5))
+       .attr("x2",x(d3.max(arr,(d)=> d[0])))
        .attr("y2",y(0));
 
       var h1 = d3.select('h1');
@@ -106,7 +100,7 @@ const shift =(arr)=> {
         .attr("stroke", "steelblue")
         .attr("stroke-width", 1.5)
         .attr("d", d3.line()
-          .x(function(d) { return x(d[0]) })
+          .x(function(d) { return x(d[0])})
           .y(function(d) { return y(d[1]) })
           )
   var focusTxt = svg
@@ -138,7 +132,7 @@ const shift =(arr)=> {
        var x0 = x.invert(d3.mouse(this)[0])  //Important!
        var i=bisect(arr,x0,1)
        var currentData=arr.slice(0,i)
-      // console.log(i,arr.length)
+      console.log(i,arr.length)
        var currentData2=i?arr.slice(0,i+1):arr.slice(0,arr.length)
        h1.style("font-family",'arial')
        l.attr("x1",x(arr[i][0]))
@@ -232,13 +226,6 @@ const shift =(arr)=> {
       MathJax.Hub.Typeset();
       shift(arr)
     }
- 
-  
-    slider.oninput = function() {
-      console.log(this.value);
-      h5.innerHTML=this.value;
-    } 
-  
 
       var padding= 100;
   var margin = {top: 10, right: 30, bottom: 30, left: 60},
@@ -257,7 +244,6 @@ const shift =(arr)=> {
 domainmin.oninput= (e)=>{
       console.log(Number(e.target.value))
       let arr=[]
-      let func=new Function("x", `return x**2`)
       for(let i=Number(e.target.value);i<domainmax.value;i+=1){
         arr.push([i,func(i)])
       }
@@ -267,8 +253,7 @@ domainmin.oninput= (e)=>{
 domainmax.oninput= (e)=>{
       console.log(Number(e.target.value))
       let arr1=[]
-      let func=new Function("x", `return x**2`)
-      for(let i=Number(domainmin.value); i<Number(e.target.value);i+=1){
+      for(let i=Number(domainmin.value); i<=Number(e.target.value);i+=1){
         arr1.push([i,func(i)])
       }
       shift(arr1)
