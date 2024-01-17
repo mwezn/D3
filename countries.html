@@ -5,24 +5,89 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bordering Countries Network Graph</title>
   <script src="https://d3js.org/d3.v6.min.js"></script>
+  <style>
+    .box {
+  height: 20px;
+  width: 20px;
+  margin-bottom: 15px;
+  border: 1px solid black;
+}
+.yellow {
+  background-color:yellow;
+}
+
+.red {
+  background-color: red;
+}
+
+.green {
+  background-color: green;
+}
+
+.blue {
+  background-color: blue;
+}
+  </style>
 </head>
 <body>
 
+<div>
+  <div class='box yellow'></div>= Europe
+  <div class='box red'></div>= Asia<br>
+  <div class='box green'></div>= Africa<br>
+  <div class='box blue'></div>= Americas
+</div>
 <div id="graph-container"></div>
 <button onclick="fetchJson()">Fetch all countries</button>
 
-<ul id="all"></ul>
+
+<ul id="all">
+</ul>
+
+<div id="graph-container2"></div>
 
 <script>
 // Sample data (replace with your own dataset)
 var list=document.getElementById('all');
+
+let a=[];
 const fetchJson= ()=> {
+
+  
+  
+
   fetch('/all')
   .then(d=>d.json())
   .then(json=>{
-     json.forEach(i=>console.log(i))
+      
+      data=json.filter(d=>d.cioc)
+      data=data.filter(d=>d.borders)
+      console.log(data)
+      
+     data.forEach(i=>{
+      let obj={country:null, borders:[],continent:null}
+
+      //console.log(i)
+      //list.innerHTML+=`<li>${i.name.common} ${i.borders} </li>`
+      obj.country=i.name.common
+      obj.continent=i.region
+      i.borders.forEach(d=>{
+        //console.log(data.find(elem=>elem.cioc==d||elem.cca3==d)?data.find(elem=>elem.cioc==d||elem.cca3==d).name:"no")
+        obj.borders.push(data.find(elem=>elem.cioc==d||elem.cca3==d)?data.find(elem=>elem.cioc==d||elem.cca3==d).name.common:null)
+        obj.borders=obj.borders.filter(d=>d!=null)
+        
+
+      })
+      
+      a.push(obj)
+      
+    })
+    console.log(a)
+    shift(a)
+     
   })
 }
+
 
 
 const countries = [
@@ -42,15 +107,114 @@ const countries = [
   {id: "UK", name:"UK", continent:"Europe", borders:["Ireland", "France"]},
   {id: "Ireland", name:"Ireland", continent:"Europe", borders:["UK"]},
   {id: "Italy", name:"Italy", continent: "Europe", borders:["France"]}
-  
-
-  
-  
 ];
 
+
 // Set up the SVG container
-const width = 600;
-const height = 400;
+const width = 1200;
+const height = 1200;
+
+
+const shift =(arr)=> {
+    d3.select("svg").remove();
+    const svg = d3.select("#graph-container")
+              .append("svg")
+              .attr("width", width)
+              .attr("height", height);
+    
+// Create a force simulation
+const simulation = d3.forceSimulation()
+  .force("link", d3.forceLink().id(d => d.country).distance(-60))
+  .force("charge", d3.forceManyBody().strength(-10))
+  .force("collide", d3.forceCollide(30).iterations(10))
+  .force("center", d3.forceCenter(width / 2, height / 2));
+
+// Create links based on borders
+const links = [];
+arr.forEach(country => {
+  country.borders.forEach(border => {
+    links.push({ source: country.country, target: border });
+  });
+});
+  console.log(links)
+// Create the graph
+const link = svg.selectAll(".link")
+  .data(links)
+  .enter().append("line")
+  .attr("class", "link")
+  .attr("stroke", "green")
+
+const node = svg.selectAll(".node")
+  .data(arr)
+  .enter()
+  .append("circle")
+  .attr("class", "node")
+  .attr("r", 6)
+  .call(d3.drag()
+    .on("start", dragstarted)
+    .on("drag", dragged)
+    .on("end", dragended))
+  .style("fill",d=>d.continent=="Europe"?"orange":d.continent=="Africa"?"green":d.continent=="Asia"?"red":d.continent=="Americas"?"blue":"yellow")
+
+  
+    const textD= svg.selectAll("text")
+       .data(arr)
+       .enter()
+       .append("text")
+       .attr("fill","black")
+       .attr("x", (d,i)=>200+i*75)
+       .attr("y",(d,i)=>i*75)
+       .attr("font-size",16)
+       .text(d=>d.country)
+       
+
+// Update the simulation
+simulation.nodes(arr)
+  .on("tick", ticked);
+
+simulation.force("link")
+  .links(links);
+
+  // Define the tick function
+function ticked() {
+  link
+    .attr("x1", d => d.source.x)
+    .attr("y1", d => d.source.y)
+    .attr("x2", d => d.target.x)
+    .attr("y2", d => d.target.y);
+
+  node
+    .attr("cx", d => d.x)
+    .attr("cy", d => d.y)
+    
+  textD
+    .attr('x',d=>d.x)
+    .attr('y',d=>d.y)
+}
+
+function dragstarted(event, d) {
+  if (!event.active) simulation.alphaTarget(0.3).restart();
+  d.fx = d.x;
+  d.fy = d.y;
+}
+
+function dragged(event, d) {
+  d.fx = event.x;
+  d.fy = event.y;
+}
+
+function dragended(event, d) {
+  if (!event.active) simulation.alphaTarget(0);
+  d.fx = null;
+  d.fy = null;
+}
+
+
+
+}
+
+
+
 
 const svg = d3.select("#graph-container")
   .append("svg")
@@ -123,10 +287,6 @@ function ticked() {
   textD
     .attr('x',d=>d.x)
     .attr('y',d=>d.y)
-  
-  
-    
-    
 }
 
 // Define drag functions
