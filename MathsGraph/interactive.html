@@ -102,6 +102,7 @@ const shift =(arr)=> {
         .attr("d", d3.line()
           .x(function(d) { return x(d[0])})
           .y(function(d) { return y(d[1]) })
+          .curve(d3.curveCatmullRom.alpha(0.5))
           )
   var focusTxt = svg
     .append('g')
@@ -195,7 +196,7 @@ const shift =(arr)=> {
       latex.innerHTML=expression
       let arr=[]
       if (e.target.value=='Math.sin(x)'){
-        for (let i=-2*Math.PI;i<=2*Math.PI;i+=1.5){
+        for (let i=0;i<=2*Math.PI;i+=.015*Math.PI){
           arr.push([i,func(i)])
         }
       }

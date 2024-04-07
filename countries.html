@@ -49,6 +49,9 @@
 <script>
 // Sample data (replace with your own dataset)
 var list=document.getElementById('all');
+// Set up the SVG container
+const width = 1200;
+const height = 1200;
 
 let a=[];
 const fetchJson= ()=> {
@@ -110,9 +113,7 @@ const countries = [
 ];
 
 
-// Set up the SVG container
-const width = 1200;
-const height = 1200;
+
 
 
 const shift =(arr)=> {
@@ -124,9 +125,9 @@ const shift =(arr)=> {
     
 // Create a force simulation
 const simulation = d3.forceSimulation()
-  .force("link", d3.forceLink().id(d => d.country).distance(-60))
-  .force("charge", d3.forceManyBody().strength(-10))
-  .force("collide", d3.forceCollide(30).iterations(10))
+  .force("link", d3.forceLink().id(d => d.country).distance(20))
+  .force("charge", d3.forceManyBody().strength(-0.75))
+  .force("collide", d3.forceCollide(20).iterations(40))
   .force("center", d3.forceCenter(width / 2, height / 2));
 
 // Create links based on borders

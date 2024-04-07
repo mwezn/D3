@@ -1,7 +1,6 @@
-const tidyData = (data)=>{
+const tidyData2 = (data)=>{
     let a=[]
-
-data.forEach(i=>{
+    data.forEach(i=>{
     let obj={country:null, borders:[]}
 
     obj.country=i.name.common

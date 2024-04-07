@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Circle Rotation and Sine Wave with Tangent</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        .circle {
+            fill: none;
+            stroke: black;
+        }
+        .rotating-point, .sine-point {
+            fill: blue;
+        }
+        .sine-wave {
+            fill: none;
+            stroke: red;
+            stroke-width: 2;
+        }
+        .tangent-line {
+            stroke: green;
+            stroke-dasharray: 4;
+        }
+        .hypotenuse {
+            stroke: rgb(128, 68, 0);
+            stroke-width:3
+
+        }
+        .perpen {
+            stroke: black;
+            stroke-width:1;
+        }
+        .axis {
+            stroke:aqua;
+            stroke-width: 1;
+        }
+        .angle {
+            font-size:30px;
+        }
+    </style>
+</head>
+<body>
+    <svg id="visualization" width="1400" height="400"></svg>
+    <p id="angle" class="angle"></p>
+    <script>
+        const svg = d3.select("#visualization"),
+              width = +svg.attr("width"),
+              height = +svg.attr("height");
+
+        const circleRadius = 100,
+              circleCenter = { x: 150, y: 200 },
+              sineWaveStartX = 300,
+              angleScale = 1, // Scale angle to spread out sine wave horizontally
+              maxAngle = 4 * Math.PI; // 720 degrees
+
+            
+
+
+            var angleText=document.getElementById('angle')
+
+        // Draw the unit circle
+        svg.append("circle")
+            .attr("class", "circle")
+            .attr("cx", circleCenter.x)
+            .attr("cy", circleCenter.y)
+            .attr("r", circleRadius);
+        svg.append("line")
+           .attr('x1',300)
+           .attr('y1',300)
+           .attr('x2',300)
+           .attr('y2',100)
+           .attr("visibility", "visible")
+           .attr("class", "axis")
+        // Line generator for the sine wave
+        const lineGenerator = d3.line()
+                                .x(d => d.x)
+                                .y(d => d.y)
+                                .curve(d3.curveCardinal);
+
+        let angle = 0; // Start angle
+        const points = []; // Points for the sine wave
+
+        // Add the rotating point on the circle
+        const rotatingPoint = svg.append("circle")
+                                 .attr("class", "rotating-point")
+                                 .attr("r", 5)
+                                 .attr("cx", circleCenter.x + circleRadius)
+                                 .attr("cy", circleCenter.y);
+
+        // Add the sine wave path (initially empty)
+        const sineWave = svg.append("path")
+                            .attr("class", "sine-wave");
+
+        // Add the tangent line (initially invisible)
+        const tangentLine = svg.append("line")
+                               .attr("class", "tangent-line")
+                               .attr("x1", 0)
+                               .attr("y1", 0)
+                               .attr("x2", 0)
+                               .attr("y2", 0)
+                               .attr("visibility", "hidden");
+            const hypotenuse = svg.append("line")
+                               .attr("class", "hypotenuse")
+                               .attr("x1", 0)
+                               .attr("y1", 0)
+                               .attr("x2", 0)
+                               .attr("y2", 0)
+                               .attr("visibility", "hidden");
+            const perpendicular = svg.append("line")
+                               .attr("class", "tangent-line")
+                               .attr("x1", 0)
+                               .attr("y1", 0)
+                               .attr("x2", 0)
+                               .attr("y2", 0)
+                               .attr("visibility", "hidden");
+
+            const fixed =svg.append('line')
+                               .attr("class", "tangent-line")
+                               .attr("x1", 0)
+                               .attr("y1", 0)
+                               .attr("x2", 0)
+                               .attr("y2", 0)
+                               .attr("visibility", "hidden");
+            const rightAngle1 =svg.append('line')
+                               .attr("class", "perpen")
+                               .attr("x1", 0)
+                               .attr("y1", 0)
+                               .attr("x2", 0)
+                               .attr("y2", 0)
+                               .attr("visibility", "hidden");
+            const rightAngle2 =svg.append('line')
+                               .attr("class", "perpen")
+                               .attr("x1", 0)
+                               .attr("y1", 0)
+                               .attr("x2", 0)
+                               .attr("y2", 0)
+                               .attr("visibility", "hidden");
+
+
+            
+
+               
+
+
+        function update() {
+
+            const x = circleCenter.x + circleRadius * Math.cos(angle);
+            const perpenx=circleCenter.x + circleRadius * (Math.cos(angle) )
+            const perpeny=circleCenter.y + circleRadius * (Math.sin(angle));
+            const y = circleCenter.y + circleRadius * Math.sin(angle);
+            rotatingPoint.attr("cx", x).attr("cy", y);
+            const sineX = sineWaveStartX + Math.abs(angle) * angleScale * 50; // Adjust 50 to spread or squeeze
+            const sineY = circleCenter.y + circleRadius * Math.sin(angle); // Reflect sine wave vertically
+            points.push({x: sineX, y: sineY});
+            sineWave.attr("d", lineGenerator(points));
+
+            // Show the tangent line after the first full rotation for clarity
+            if (angle < 0) {
+                tangentLine.attr("visibility", "visible")
+                           .attr("x1", x)
+                           .attr("y1", y)
+                           .attr("x2", sineX)
+                           .attr("y2", sineY);
+                hypotenuse.attr('visibility', 'visible')
+                          .attr('x1',150)
+                          .attr('y1',200)
+                          .attr('x2',x)
+                          .attr('y2',y)
+                perpendicular.attr('visibility', 'visible')
+                          .attr('x1',50)
+                          .attr('y1',200)
+                          .attr('x2',250)
+                          .attr('y2',200)
+                fixed.attr('visibility', 'visible')
+                          .attr('x1',x)
+                          .attr('y1',200)
+                          .attr('x2',x)
+                          .attr('y2',y)
+                rightAngle1.attr('visibility', 'visible')
+                          .attr('x1',Math.ceil(Math.cos(angle))==0?perpenx+(10):perpenx-(10*Math.ceil(Math.cos(angle))))
+                          .attr('y1',Math.ceil(Math.sin(angle))==1?210:200)
+                          .attr('x2',Math.ceil(Math.cos(angle))==0?perpenx+(10):perpenx-(10*Math.ceil(Math.cos(angle))))
+                          .attr('y2',Math.ceil(Math.sin(angle))==1?200:190);
+                rightAngle2.attr('visibility', 'visible')
+                          .attr('x1',Math.ceil(Math.cos(angle))==0?x+10:x-10)
+                          .attr('x2',Math.ceil(Math.cos(angle))==0?x:x)
+                          .attr('y1',Math.ceil(Math.sin(angle))==0?190:200 +(10*Math.ceil(Math.sin(angle))))
+                          .attr('y2',Math.ceil(Math.sin(angle))==0?190:200 +(10*Math.ceil(Math.sin(angle))))
+
+                          //Math.ceil(Math.sin(angle))==0?perpeny+10:perpeny -(10*Math.ceil(Math.sin(angle)))
+            }
+            
+
+
+            angle -= Math.PI / 360; // Increment angle
+            angleText.innerHTML=`Angle turned anticlockwise: ${Math.round(Math.abs(angle*57.2958),2)} degrees` 
+            if (angle <= -maxAngle) {
+                angle = 0;
+                points.length = 0; // Clear points to restart sine wave
+                tangentLine.attr("visibility", "hidden"); // Hide the tangent line until the next full rotation
+            }
+
+            requestAnimationFrame(update);
+        }
+
+        update();
+    </script>
+</body>
+</html>

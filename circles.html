@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D3.js Circles Example</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        /* Style for the circles */
+        .circle {
+            stroke: steelblue;
+            fill: none;
+            stroke-width: 2px;
+        }
+    </style>
+</head>
+<body>
+    <!-- SVG container where circles will be drawn -->
+    <svg id="svg-container" width="1200" height="800"></svg>
+
+    <script>
+        // Sample data for circles
+        const data = [
+            { cx: 100, cy: 100, r: 100 },
+            { cx: 200, cy: 100, r: 100 },
+            { cx: 150, cy: 200, r: 100 }
+        ];
+
+        // Select the SVG container
+        const svg = d3.select("#svg-container");
+
+        // Bind data and create circles
+        const circles = svg.selectAll("circle")
+            .data(data)
+            .enter()
+            .append("circle")
+            .attr("class", "circle")
+            .attr("cx", d => d.cx) // x-coordinate of the center
+            .attr("cy", d => d.cy) // y-coordinate of the center
+            .attr("r", d => d.r); // radius
+
+    </script>
+</body>
+</html>
