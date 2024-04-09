@@ -28,11 +28,11 @@
         }
         .perpen {
             stroke: black;
-            stroke-width:1;
+            stroke-width:2;
         }
         .axis {
-            stroke:aqua;
-            stroke-width: 1;
+            stroke:black;
+            stroke-width: 2;
         }
         .angle {
             font-size:30px;
@@ -40,8 +40,10 @@
     </style>
 </head>
 <body>
-    <svg id="visualization" width="1400" height="400"></svg>
+    <svg id="visualization" width="1400" height="800"></svg>
     <p id="angle" class="angle"></p>
+    <p id="xvalue" class="angle"></p>
+    <p id="yvalue" class="angle"></p>
     <script>
         const svg = d3.select("#visualization"),
               width = +svg.attr("width"),
@@ -52,11 +54,14 @@
               sineWaveStartX = 300,
               angleScale = 1, // Scale angle to spread out sine wave horizontally
               maxAngle = 4 * Math.PI; // 720 degrees
+              cosWaveStartY=340;
 
             
 
 
             var angleText=document.getElementById('angle')
+            var adjacent=document.getElementById('xvalue')
+            var opposite=document.getElementById('yvalue')
 
         // Draw the unit circle
         svg.append("circle")
@@ -71,14 +76,27 @@
            .attr('y2',100)
            .attr("visibility", "visible")
            .attr("class", "axis")
+        svg.append("line")
+           .attr('x1',50)
+           .attr('y1',340)
+           .attr('x2',250)
+           .attr('y2',340)
+           .attr("visibility", "visible")
+           .attr("class", "axis")
         // Line generator for the sine wave
         const lineGenerator = d3.line()
                                 .x(d => d.x)
                                 .y(d => d.y)
                                 .curve(d3.curveCardinal);
 
+        const lineGen2 = d3.line()
+                    .x(d => d.y)
+                    .y(d => d.x)
+                    .curve(d3.curveCardinal);
+
         let angle = 0; // Start angle
         const points = []; // Points for the sine wave
+        const cospoints=[]; //Points for the cosine wave
 
         // Add the rotating point on the circle
         const rotatingPoint = svg.append("circle")
@@ -90,9 +108,18 @@
         // Add the sine wave path (initially empty)
         const sineWave = svg.append("path")
                             .attr("class", "sine-wave");
+        const cosWave = svg.append("path")
+                            .attr("class", "sine-wave");
 
         // Add the tangent line (initially invisible)
         const tangentLine = svg.append("line")
+                               .attr("class", "tangent-line")
+                               .attr("x1", 0)
+                               .attr("y1", 0)
+                               .attr("x2", 0)
+                               .attr("y2", 0)
+                               .attr("visibility", "hidden");
+            const costangent = svg.append("line")
                                .attr("class", "tangent-line")
                                .attr("x1", 0)
                                .attr("y1", 0)
@@ -106,21 +133,28 @@
                                .attr("x2", 0)
                                .attr("y2", 0)
                                .attr("visibility", "hidden");
-            const perpendicular = svg.append("line")
+            const centerline = svg.append("line")
                                .attr("class", "tangent-line")
+                               .attr("x1", 0)
+                               .attr("y1", 0)
+                               .attr("x2", 0)
+                               .attr("y2", 0)
+                               .attr("visibility", "hidden");
+            const oppo=svg.append('g')
+            const fixed =oppo.append('line')
+                               .attr("class", "perpen")
                                .attr("x1", 0)
                                .attr("y1", 0)
                                .attr("x2", 0)
                                .attr("y2", 0)
                                .attr("visibility", "hidden");
 
-            const fixed =svg.append('line')
-                               .attr("class", "tangent-line")
-                               .attr("x1", 0)
-                               .attr("y1", 0)
-                               .attr("x2", 0)
-                               .attr("y2", 0)
-                               .attr("visibility", "hidden");
+            const opptext= oppo.append('text')
+              .attr('text-anchor', 'middle')
+              .attr("x", 250)
+              .attr("y", 150)
+              .text('opposite')
+
             const rightAngle1 =svg.append('line')
                                .attr("class", "perpen")
                                .attr("x1", 0)
@@ -135,8 +169,31 @@
                                .attr("x2", 0)
                                .attr("y2", 0)
                                .attr("visibility", "hidden");
+            
+            const adja=svg.append('g')
+            const adj = adja.append("line")
+                               .attr("class", "axis")
+                               .attr("x1", 0)
+                               .attr("y1", 0)
+                               .attr("x2", 0)
+                               .attr("y2", 0)
+                               .attr("visibility", "hidden");
+            const adjtext= adja.append('text')
+             .attr('text-anchor', 'middle')
+              .attr("x", 200)
+              .attr("y", 190)
+              .text('adjacent')
 
+            const theta=svg.append('g')
+            theta.append('text')
+             .attr('text-anchor', 'middle')
+              .attr("x", 160)
+             .attr("y", 200)
+             .text('θ')
 
+             
+
+            
             
 
                
@@ -154,19 +211,43 @@
             points.push({x: sineX, y: sineY});
             sineWave.attr("d", lineGenerator(points));
 
+            const cosX=cosWaveStartY+Math.abs(angle)*50
+            const cosY=circleCenter.x + circleRadius * Math.cos(angle); 
+            cospoints.push({x: cosX,y: cosY});
+            cosWave.attr("d", lineGen2(cospoints));
+
+            adjtext.attr('x',x)
+            opptext.attr('x',x)
+            opptext.attr('y',y+50)
+
+            
+
+
             // Show the tangent line after the first full rotation for clarity
             if (angle < 0) {
+
+                adj.attr('visibility', 'visible')
+                    .attr("x1", 150)
+                    .attr("y1",200)
+                    .attr("x2",x)
+                    .attr("y2",200)
+
                 tangentLine.attr("visibility", "visible")
                            .attr("x1", x)
                            .attr("y1", y)
                            .attr("x2", sineX)
                            .attr("y2", sineY);
+                costangent.attr("visibility", "visible")
+                           .attr("x1", x)
+                           .attr("y1", y)
+                           .attr("x2", cosY)
+                           .attr("y2", cosX);
                 hypotenuse.attr('visibility', 'visible')
                           .attr('x1',150)
                           .attr('y1',200)
                           .attr('x2',x)
                           .attr('y2',y)
-                perpendicular.attr('visibility', 'visible')
+                centerline.attr('visibility', 'visible')
                           .attr('x1',50)
                           .attr('y1',200)
                           .attr('x2',250)
@@ -194,9 +275,13 @@
 
             angle -= Math.PI / 360; // Increment angle
             angleText.innerHTML=`Angle turned anticlockwise: ${Math.round(Math.abs(angle*57.2958),2)} degrees` 
+            adjacent.innerHTML=`adjacent length is ${Math.round(Math.abs(circleCenter.x-x),2)/100}`
+            opposite.innerHTML=`opposite length is ${Math.round(Math.abs(circleCenter.y-y),2)/100}`
+
             if (angle <= -maxAngle) {
                 angle = 0;
-                points.length = 0; // Clear points to restart sine wave
+                points.length = 0;
+                cospoints.length=0; // Clear points to restart sine wave
                 tangentLine.attr("visibility", "hidden"); // Hide the tangent line until the next full rotation
             }
 
