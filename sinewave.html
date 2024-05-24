@@ -40,7 +40,7 @@
     </style>
 </head>
 <body>
-    <svg id="visualization" width="1400" height="800"></svg>
+    <svg id="visualization" width="1400" height="900"></svg>
     <p id="angle" class="angle"></p>
     <p id="xvalue" class="angle"></p>
     <p id="yvalue" class="angle"></p>
@@ -83,6 +83,43 @@
            .attr('y2',340)
            .attr("visibility", "visible")
            .attr("class", "axis")
+
+         const cosmin=svg.append('g')
+            cosmin.append('text')
+             .attr('text-anchor', 'middle')
+              .attr("x", 50)
+             .attr("y", 330)
+             .text('-1')
+             const cosmax=svg.append('g')
+            cosmax.append('text')
+             .attr('text-anchor', 'middle')
+              .attr("x", 250)
+             .attr("y", 330)
+             .text('1')
+             const cosmid=svg.append('g')
+            cosmid.append('text')
+             .attr('text-anchor', 'middle')
+              .attr("x", 150)
+             .attr("y", 330)
+             .text('0')
+        const sinmin=svg.append('g')
+            sinmin.append('text')
+             .attr('text-anchor', 'middle')
+              .attr("x", 290)
+             .attr("y", 300)
+             .text('-1')
+             const sinmax=svg.append('g')
+            sinmax.append('text')
+             .attr('text-anchor', 'middle')
+              .attr("x", 290)
+             .attr("y", 100)
+             .text('1')
+             const sinmid=svg.append('g')
+            sinmid.append('text')
+             .attr('text-anchor', 'middle')
+              .attr("x", 290)
+             .attr("y", 200)
+             .text('0')
         // Line generator for the sine wave
         const lineGenerator = d3.line()
                                 .x(d => d.x)
@@ -190,6 +227,8 @@
               .attr("x", 160)
              .attr("y", 200)
              .text('θ')
+
+           
 
              
 

@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bordering Countries Network Graph</title>
+  <script type="text/javascript" src="../flags.js"></script>
   <script src="https://d3js.org/d3.v6.min.js"></script>
   <style>
     .box {
@@ -27,6 +28,7 @@
 .blue {
   background-color: blue;
 }
+
   </style>
 </head>
 <body>
@@ -40,18 +42,28 @@
 <div id="graph-container"></div>
 <button onclick="fetchJson()">Fetch all countries</button>
 
-
+<h2>Just a D3 network graph showing all road borders between countries</h2>
 <ul id="all">
 </ul>
 
 <div id="graph-container2"></div>
 
 <script>
+
+arr=Object.keys(countriesFlags)
+arr1=Object.values(countriesFlags)
+
+
+
+
+
+
+
 // Sample data (replace with your own dataset)
 var list=document.getElementById('all');
 // Set up the SVG container
 const width = 1200;
-const height = 1200;
+const height = 3000;
 
 let a=[];
 const fetchJson= ()=> {
@@ -68,12 +80,14 @@ const fetchJson= ()=> {
       console.log(data)
       
      data.forEach(i=>{
-      let obj={country:null, borders:[],continent:null}
+      let obj={country:null, borders:[],continent:null,x:null,y:null,cx:null,cy:null,r:1}
 
       //console.log(i)
       //list.innerHTML+=`<li>${i.name.common} ${i.borders} </li>`
       obj.country=i.name.common
       obj.continent=i.region
+      obj.subregion=i.subregion
+      obj.population=i.population
       i.borders.forEach(d=>{
         //console.log(data.find(elem=>elem.cioc==d||elem.cca3==d)?data.find(elem=>elem.cioc==d||elem.cca3==d).name:"no")
         obj.borders.push(data.find(elem=>elem.cioc==d||elem.cca3==d)?data.find(elem=>elem.cioc==d||elem.cca3==d).name.common:null)
@@ -101,6 +115,7 @@ const countries = [
   },
   { id:"Spain", name: "Spain",continent: "Europe", borders: ["France"]
   },
+  {id: 'Portugal' , name: 'Portugal', continent: 'Europe' ,borders: ['Spain']},
   {id:"Morocco", name:"Morocco", continent:"Africa", borders:["Algeria","Spain"]},
   {id:"Algeria", name:"Algeria", continent:"Africa", borders:["Morocco"]},
 
@@ -122,13 +137,50 @@ const shift =(arr)=> {
               .append("svg")
               .attr("width", width)
               .attr("height", height);
-    
+
+  
 // Create a force simulation
-const simulation = d3.forceSimulation()
-  .force("link", d3.forceLink().id(d => d.country).distance(20))
-  .force("charge", d3.forceManyBody().strength(-0.75))
-  .force("collide", d3.forceCollide(20).iterations(40))
-  .force("center", d3.forceCenter(width / 2, height / 2));
+const simulation = d3.forceSimulation(arr)
+  .force("link", d3.forceLink().id(d => d.country))
+   //.force("charge", d3.forceManyBody().strength(1))
+  .force("collide", d3.forceCollide(25).iterations(1))
+  .force("cluster", forceCluster(arr))
+  .force("center", d3.forceCenter(width / 2, height / 3));
+
+  function centroid(arr) {
+  let x = 0;
+  let y = 0;
+  let z = 0;
+  for (const d of arr) {
+    let k = d.r ** 2;
+    x += d.x * k;
+    y += d.y * k;
+    z += k;
+  }
+  return {x: x / z, y: y / z};
+}
+
+  function forceCluster(arr) {
+  const strength = 1.2;
+  let alpha=8;
+  
+
+  function force(alpha) {
+    const centroids = d3.rollup(arr, centroid, d =>d.continent);
+    //console.log(centroids)
+    const l = alpha * strength;
+    for (const d of arr) {
+      const {x: cx, y: cy} = centroids.get(d.continent);
+      d.vx -= (d.x - cx) * l;
+      d.vy -= (d.y - cy) * l;
+    }
+  }
+
+  force.initialize = _ => arr = _;
+
+  return force;
+}
+
 
 // Create links based on borders
 const links = [];
@@ -143,19 +195,38 @@ const link = svg.selectAll(".link")
   .data(links)
   .enter().append("line")
   .attr("class", "link")
-  .attr("stroke", "green")
+  .attr('stroke', 'black')
+  
+  
 
-const node = svg.selectAll(".node")
+var node = svg.selectAll(".node")
   .data(arr)
   .enter()
   .append("circle")
   .attr("class", "node")
-  .attr("r", 6)
-  .call(d3.drag()
-    .on("start", dragstarted)
-    .on("drag", dragged)
-    .on("end", dragended))
-  .style("fill",d=>d.continent=="Europe"?"orange":d.continent=="Africa"?"green":d.continent=="Asia"?"red":d.continent=="Americas"?"blue":"yellow")
+  .attr("cx", d=>d.x)
+  .attr("cy", function(d) { return d.y; })
+  .attr("r", d=>{
+    return 20*(d.population/250000000)**0.5
+    //each 100 million people=10cm radius
+  })
+  .attr('r', 10)
+  .style("fill",d=>d.continent=="Europe"?"rgba(22,29,200,0.9)":d.continent=="Africa"?"rgba(2,200,20,0.8)":d.continent=="Asia"?"rgba(220,29,2,0.7)":d.continent=="Americas"?"rgba(202,30,200,0.8)":"yellow")
+
+  var myimage = svg.selectAll('image')
+        .data(arr)
+        .enter()
+        .append('image')
+        .attr('xlink:href',(d,i)=>{
+          console.log(d.country)
+          return countriesFlags[d.country]?`${countriesFlags[d.country].mini}`:''
+        })
+        .attr("x", (d,i)=>100)
+        .attr("y",(d,i)=>100)
+        .attr('width', '15px')
+        .attr('height', '10px')
+   
+
 
   
     const textD= svg.selectAll("text")
@@ -165,19 +236,24 @@ const node = svg.selectAll(".node")
        .attr("fill","black")
        .attr("x", (d,i)=>200+i*75)
        .attr("y",(d,i)=>i*75)
-       .attr("font-size",16)
+       .attr("font-size",12)
        .text(d=>d.country)
        
 
 // Update the simulation
 simulation.nodes(arr)
-  .on("tick", ticked);
+  .on("tick", tick);
 
-simulation.force("link")
+ simulation.force("link")
   .links(links);
 
-  // Define the tick function
-function ticked() {
+// Define the tick function
+
+function tick(e) {
+   
+
+
+
   link
     .attr("x1", d => d.source.x)
     .attr("y1", d => d.source.y)
@@ -185,12 +261,15 @@ function ticked() {
     .attr("y2", d => d.target.y);
 
   node
-    .attr("cx", d => d.x)
-    .attr("cy", d => d.y)
+    .attr("cx", d=>d.x)
+    .attr("cy", d =>d.y)
     
   textD
     .attr('x',d=>d.x)
     .attr('y',d=>d.y)
+  myimage
+     .attr('x', d=>d.x)
+     .attr('y', d=>d.y)
 }
 
 function dragstarted(event, d) {
@@ -217,7 +296,7 @@ function dragended(event, d) {
 
 
 
-const svg = d3.select("#graph-container")
+/*const svg = d3.select("#graph-container")
   .append("svg")
   .attr("width", width)
   .attr("height", height);
@@ -264,6 +343,16 @@ const node = svg.selectAll(".node")
        .attr("x", (d,i)=>100+i*75)
        .attr("y",(d,i)=>100+i*75)
        .text(d=>d.id)
+    var myimage = svg.selectAll('image')
+        .data(countries)
+        .enter()
+        .append('image')
+        .attr('xlink:href',(d,i)=>`${countriesFlags[d.id].mini}`)
+        .attr("x", (d,i)=>100)
+        .attr("y",(d,i)=>100)
+        .attr('width', '15px')
+        .attr('height', '10px')
+   
        
 
 // Update the simulation
@@ -288,6 +377,9 @@ function ticked() {
   textD
     .attr('x',d=>d.x)
     .attr('y',d=>d.y)
+  myimage
+     .attr('x', d=>d.x)
+     .attr('y', d=>d.y)
 }
 
 // Define drag functions
@@ -306,7 +398,7 @@ function dragended(event, d) {
   if (!event.active) simulation.alphaTarget(0);
   d.fx = null;
   d.fy = null;
-}
+}*/
 </script>
 
 

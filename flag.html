@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>FLAGS</title>
+<style>
+	.grid {
+		display:grid;
+		grid-template-columns: 10% 10% 10% 10% 10% 10% 10% 10% 10% 10%;
+		border:1px solid black;
+	}
+
+	.grid p {
+		font-size: 10px;
+	}
+</style>
+</head>
+<body>
+<div class='grid' id="imageContainer">
+
+</div>
+<script type="text/javascript" src="../flags.js"></script>
+<script>
+
+    arr=Object.keys(countriesFlags)
+	arr1=Object.values(countriesFlags)
+    console.log(arr)
+	let images=document.getElementById('imageContainer')
+	for(let i=0;i<arr.length;i++){
+		images.innerHTML+=`<div><p>${arr[i]}</p><img src=${countriesFlags[arr[i]].mini}></div>`
+	}
+	
+	
+</script>
+</body>
+</html>

@@ -17,8 +17,15 @@ app.get('/', (req,res)=>{
     res.sendFile(__dirname+'/countries.html')
 })
 
+app.get('/flags', (req,res)=>{
+  res.sendFile(__dirname+'/flag.html')
+})
+
 app.get('/all', (req, res)=>{
     res.json(countryJson)
+})
+app.get('/cluster', (req, res)=>{
+  res.sendFile(__dirname+'/clustered.html')
 })
 
 app.listen(PORT,()=>{
